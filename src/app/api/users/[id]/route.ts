@@ -55,7 +55,10 @@ export async function GET(
       ...user,
       createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : user.createdAt,
       updatedAt: user.updatedAt instanceof Date ? user.updatedAt.toISOString() : user.updatedAt,
-      appPermissions: perms,
+      appPermissions: perms.map(p => ({
+        ...p,
+        features: Array.isArray(p.features) ? p.features : (typeof p.features === 'string' ? (() => { try { return JSON.parse(p.features); } catch { return []; } })() : [])
+      })),
     });
   } catch (err) {
     console.error("[USER] GET error:", err);

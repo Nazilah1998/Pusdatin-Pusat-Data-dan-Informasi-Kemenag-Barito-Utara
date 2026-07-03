@@ -187,7 +187,7 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
                           <input
                             type="checkbox"
                             id={`${perm.appId}-${feat.id}`}
-                            checked={(perm.features || []).includes(feat.id)}
+                            checked={Array.isArray(perm.features) ? perm.features.includes(feat.id) : false}
                             onChange={(e) => handleFeatureToggle(perm.appId, feat.id, e.target.checked)}
                             className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                           />

@@ -29,7 +29,8 @@ export default function UserDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const { data: user, isLoading } = useUser(id);
+  const { data: user, isLoading, isError, error } = useUser(id);
+  console.log("[DEBUG UserDetail]", { id, user, isLoading, isError, error });
   const { data: apps } = useApps();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
@@ -72,6 +73,14 @@ export default function UserDetailPage() {
       </div>
     );
   }
+  
+  console.log("[DEBUG Pre-render UserDetail]", JSON.parse(JSON.stringify(user)));
+  console.log("Checking fields:", { 
+    hasAppPermissions: !!user.appPermissions,
+    isAppPermissionsArray: Array.isArray(user.appPermissions),
+    hasCreatedAt: !!user.createdAt,
+    hasApps: !!apps
+  });
 
   return (
     <div className="space-y-6">
@@ -243,7 +252,7 @@ export default function UserDetailPage() {
                             <p className="text-xs text-slate-500 italic">Tidak ada fitur spesifik.</p>
                           ) : (
                             <ul className="space-y-2">
-                              {perm.features.map(featId => {
+                              {(Array.isArray(perm.features) ? perm.features : []).map(featId => {
                                 const featLabel = availableFeatures.find(f => f.id === featId)?.label || featId;
                                 return (
                                   <li key={featId} className="flex items-start gap-2 text-sm text-slate-700">
