@@ -8,8 +8,9 @@ import { desc } from "drizzle-orm";
 export async function GET(_request: NextRequest) {
   try {
     const session = await getCurrentSessionContext();
+    console.log("[DEBUG health] session:", session, "env.pusdatinSchema:", env.pusdatinSchema);
     if (!session.isAdmin) {
-      return apiResponse({ message: "Unauthorized" }, 401);
+      return apiResponse({ message: "Unauthorized", session }, 401);
     }
 
     const [latest] = await db

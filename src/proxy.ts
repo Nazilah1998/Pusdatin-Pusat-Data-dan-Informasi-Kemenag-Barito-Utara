@@ -15,7 +15,7 @@ export function proxy(request: NextRequest) {
   }
 
   const hasSupabaseSession = request.cookies.getAll().some(c =>
-    c.name.startsWith("sb-") && c.name.includes("auth-token")
+    c.name.startsWith("sb-pusdatin-auth-token")
   );
 
   const isPublic = publicPaths.some(
