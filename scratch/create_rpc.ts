@@ -22,11 +22,11 @@ async function run() {
           'status', u.status,
           'userType', u.user_type,
           'app_permissions', COALESCE(
-            (SELECT jsonb_agg(ap) FROM website_pusdatin.app_permissions ap WHERE ap.user_id = u.id), 
+            (SELECT jsonb_agg(ap) FROM kemenag_pusdatin.app_permissions ap WHERE ap.user_id = u.id), 
             '[]'::jsonb
           )
         ) INTO result
-        FROM website_pusdatin.users u
+        FROM kemenag_pusdatin.users u
         WHERE u.email = email_address;
         
         RETURN result;

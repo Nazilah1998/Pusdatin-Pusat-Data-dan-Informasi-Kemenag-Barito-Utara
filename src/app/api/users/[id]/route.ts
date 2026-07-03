@@ -112,7 +112,7 @@ export async function PUT(
       await recordAudit({
         action: "UPDATE",
         target: `user:${oldUser.email}`,
-        targetSchema: "website_pusdatin",
+        targetSchema: "kemenag_pusdatin",
         performedBy: session.user?.email ?? "unknown",
         ip: getClientIp(request),
         beforeState: { name: oldUser.name, email: oldUser.email, role: oldUser.role },
@@ -227,7 +227,7 @@ export async function DELETE(
       await recordAudit({
         action: "DELETE",
         target: `user:${user.email}`,
-        targetSchema: "website_pusdatin",
+        targetSchema: "kemenag_pusdatin",
         performedBy: session.user?.email ?? "unknown",
         ip: getClientIp(request),
         beforeState: { name: user.name, email: user.email, role: user.role },

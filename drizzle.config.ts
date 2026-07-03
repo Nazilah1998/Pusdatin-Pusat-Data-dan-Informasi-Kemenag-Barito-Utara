@@ -7,5 +7,5 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
-  schemaFilter: ["website_pusdatin"],
+  schemaFilter: ["kemenag_pusdatin"],
 });

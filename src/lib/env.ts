@@ -12,7 +12,7 @@ export const env = {
   databaseUrl: process.env.DATABASE_URL || "",
   directUrl: process.env.DIRECT_URL || "",
   superAdminEmail: process.env.SUPER_ADMIN_EMAIL || "baritoutara@kemenag.go.id",
-  pusdatinSchema: process.env.NEXT_PUBLIC_PUSDATIN_SCHEMA || "website_pusdatin",
+  pusdatinSchema: process.env.NEXT_PUBLIC_PUSDATIN_SCHEMA || "kemenag_pusdatin",
   redisUrl: process.env.REDIS_URL || "",
 };
 
