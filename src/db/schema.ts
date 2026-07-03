@@ -16,7 +16,8 @@ export const users = pusdatin.table("users", {
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   passwordHash: text("password_hash"),
-  role: varchar("role", { length: 50 }).notNull().default("viewer"),
+  role: varchar("role", { length: 50 }).notNull().default("admin"),
+  userType: varchar("user_type", { length: 50 }).notNull().default("internal_admin"),
   status: varchar("status", { length: 20 }).notNull().default("active"),
   avatar: text("avatar"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -32,6 +33,7 @@ export const satelliteApps = pusdatin.table("satellite_apps", {
   schemaName: varchar("schema_name", { length: 100 }).notNull(),
   status: varchar("status", { length: 20 }).notNull().default("online"),
   lastHealthCheck: timestamp("last_health_check"),
+  availableFeatures: jsonb("available_features"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -40,6 +42,7 @@ export const appPermissions = pusdatin.table("app_permissions", {
   userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   appId: varchar("app_id", { length: 50 }).notNull().references(() => satelliteApps.id, { onDelete: "cascade" }),
   role: varchar("role", { length: 20 }).notNull().default("none"),
+  features: jsonb("features"),
 });
 
 export const auditLogs = pusdatin.table("audit_logs", {

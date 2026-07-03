@@ -6,6 +6,9 @@ export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
 
   return createServerClient(env.supabaseUrl, env.supabasePublishableKey, {
+    cookieOptions: {
+      name: "sb-pusdatin-auth-token",
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll();

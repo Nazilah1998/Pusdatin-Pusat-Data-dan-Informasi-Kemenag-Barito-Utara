@@ -97,7 +97,7 @@ export function AppGrid({ apps, loading, onToggle }: AppGridProps) {
             <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
               <span>Schema: {app.schema}</span>
               <a
-                href={app.url}
+                href={app.url || undefined}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-emerald-600 hover:underline"

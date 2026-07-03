@@ -1,22 +1,19 @@
-function readEnv(key: string, fallback = ""): string {
-  return process.env[key] ?? fallback;
-}
-
+// removed dynamic readEnv function as Next.js requires literal process.env access for client side variables
 export const env = {
-  siteUrl: readEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000"),
-  supabaseUrl: readEnv("NEXT_PUBLIC_SUPABASE_URL"),
-  supabaseAnonKey: readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
   supabasePublishableKey:
-    readEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY") ||
-    readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
-  supabaseServiceRoleKey: readEnv("SUPABASE_SERVICE_ROLE_KEY"),
-  turnstileSiteKey: readEnv("NEXT_PUBLIC_TURNSTILE_SITE_KEY"),
-  turnstileSecretKey: readEnv("TURNSTILE_SECRET_KEY"),
-  databaseUrl: readEnv("DATABASE_URL"),
-  directUrl: readEnv("DIRECT_URL"),
-  superAdminEmail: readEnv("SUPER_ADMIN_EMAIL", "baritoutara@kemenag.go.id"),
-  pusdatinSchema: readEnv("NEXT_PUBLIC_PUSDATIN_SCHEMA", "pusdatin"),
-  redisUrl: readEnv("REDIS_URL", ""),
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+  supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+  turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "",
+  turnstileSecretKey: process.env.TURNSTILE_SECRET_KEY || "",
+  databaseUrl: process.env.DATABASE_URL || "",
+  directUrl: process.env.DIRECT_URL || "",
+  superAdminEmail: process.env.SUPER_ADMIN_EMAIL || "baritoutara@kemenag.go.id",
+  pusdatinSchema: process.env.NEXT_PUBLIC_PUSDATIN_SCHEMA || "pusdatin",
+  redisUrl: process.env.REDIS_URL || "",
 };
 
 if (!env.supabaseUrl) {

@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
           DATE(timestamp) as date,
           COUNT(*)::int as count
         FROM ${auditLogs}
-        WHERE timestamp >= CURRENT_DATE - ${sql.raw(String(days))}::interval
+        WHERE timestamp >= CURRENT_DATE - (${days} || ' days')::interval
         GROUP BY DATE(timestamp)
         ORDER BY date ASC
       `,

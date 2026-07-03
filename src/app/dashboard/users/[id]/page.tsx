@@ -7,16 +7,30 @@ import { Badge } from "@/components/ui/Badge";
 import { Dialog } from "@/components/ui/Dialog";
 import { UserForm } from "@/components/users/UserForm";
 import { useUser, useUpdateUser, useDeleteUser } from "@/hooks/use-users";
+import { useApps } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
-import { ArrowLeft, Trash2, User as UserIcon } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Trash2, 
+  User as UserIcon, 
+  Shield, 
+  Calendar, 
+  Activity, 
+  Briefcase,
+  MonitorSmartphone,
+  CheckCircle2
+} from "lucide-react";
 import { useState } from "react";
 import type { User } from "@/types";
+
+
 
 export default function UserDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
   const { data: user, isLoading } = useUser(id);
+  const { data: apps } = useApps();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
   const [showEdit, setShowEdit] = useState(false);
@@ -64,16 +78,25 @@ export default function UserDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5 text-slate-500" />
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">{user.name}</h1>
-            <p className="text-sm text-slate-500">{user.email}</p>
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 border border-slate-200 shadow-sm">
+              <img
+                src="/branding/kemenag.svg"
+                alt="Kemenag"
+                className="h-8 w-8 object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">{user.name}</h1>
+              <p className="text-sm text-slate-500">{user.email}</p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button variant="outline" onClick={() => setShowEdit(true)}>
-            Edit
+            Edit Profil
           </Button>
           <Button
             variant="danger"
@@ -87,88 +110,154 @@ export default function UserDetailPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold text-slate-900">Informasi Akun</h3>
+        <Card className="shadow-sm border-slate-200/60">
+          <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+              <UserIcon className="h-5 w-5 text-emerald-600" />
+              Informasi Akun
+            </h3>
           </CardHeader>
-          <CardBody className="space-y-4">
-            <div>
-              <p className="text-xs text-slate-500">Role</p>
-              <Badge
-                variant={
-                  user.role === "super_admin"
-                    ? "info"
-                    : user.role === "operator"
-                      ? "success"
-                      : "default"
-                }
-              >
-                {user.role === "super_admin"
-                  ? "Super Admin"
-                  : user.role === "operator"
-                    ? "Operator"
-                    : "Viewer"}
-              </Badge>
+          <CardBody className="space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-50 rounded-lg">
+                <Briefcase className="h-4 w-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Tipe Pengguna</p>
+                <Badge variant="info">
+                  {user.userType === "internal_admin"
+                    ? "Admin Internal"
+                    : user.userType === "internal_pegawai"
+                      ? "Pegawai (PTSP)"
+                      : user.userType === "eksternal_masyarakat"
+                        ? "Masyarakat Umum"
+                        : user.userType}
+                </Badge>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-slate-500">Status</p>
-              <Badge variant={user.status === "active" ? "success" : "default"}>
-                {user.status === "active" ? "Aktif" : "Nonaktif"}
-              </Badge>
+
+            {user.userType === "internal_admin" && (
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-indigo-50 rounded-lg">
+                  <Shield className="h-4 w-4 text-indigo-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Role Global</p>
+                  <Badge
+                    variant={
+                      user.role === "super_admin"
+                        ? "info"
+                        : "default"
+                    }
+                  >
+                    {user.role === "super_admin"
+                      ? "Super Admin"
+                      : "Admin"}
+                  </Badge>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-50 rounded-lg">
+                <Activity className="h-4 w-4 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Status Akun</p>
+                <Badge variant={user.status === "active" ? "success" : "default"}>
+                  {user.status === "active" ? "Aktif" : "Nonaktif"}
+                </Badge>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-slate-500">Bergabung</p>
-              <p className="text-sm text-slate-700">
-                {new Date(user.createdAt).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
+            
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-slate-100 rounded-lg">
+                <Calendar className="h-4 w-4 text-slate-600" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Bergabung Sejak</p>
+                <p className="text-sm font-medium text-slate-700">
+                  {new Date(user.createdAt).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
             </div>
           </CardBody>
         </Card>
 
         <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <h3 className="font-semibold text-slate-900">
-                Hak Akses Aplikasi (RBAC)
+          <Card className="shadow-sm border-slate-200/60 h-full">
+            <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+              <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                <Shield className="h-5 w-5 text-emerald-600" />
+                Hak Akses Aplikasi & Fitur (RBAC)
               </h3>
             </CardHeader>
             <CardBody>
               {user.appPermissions.length === 0 ? (
-                <div className="flex items-center gap-2 text-sm text-slate-500">
-                  <UserIcon className="h-4 w-4" />
-                  Belum ada hak akses aplikasi
+                <div className="flex flex-col items-center justify-center py-12 text-slate-500 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                  <MonitorSmartphone className="h-10 w-10 text-slate-300 mb-3" />
+                  <p className="text-sm font-medium">Belum ada hak akses aplikasi yang diberikan.</p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {user.appPermissions.map((perm) => (
-                    <div
-                      key={perm.appId}
-                      className="flex items-center justify-between rounded-lg border border-slate-100 px-4 py-3"
-                    >
-                      <span className="text-sm font-medium text-slate-700">
-                        {perm.appName}
-                      </span>
-                      <Badge
-                        variant={
-                          perm.role === "operator"
-                            ? "success"
-                            : perm.role === "viewer"
-                              ? "info"
-                              : "default"
-                        }
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {user.appPermissions.map((perm) => {
+                    const currentApp = apps?.find(a => a.id === perm.appId);
+                    const availableFeatures = currentApp?.availableFeatures || [];
+                    
+                    return (
+                      <div
+                        key={perm.appId}
+                        className="flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden"
                       >
-                        {perm.role === "operator"
-                          ? "Operator"
-                          : perm.role === "viewer"
-                            ? "Viewer"
-                            : "Tidak ada"}
-                      </Badge>
-                    </div>
-                  ))}
+                        <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            <MonitorSmartphone className="h-4 w-4 text-emerald-600" />
+                            <span className="text-sm font-bold text-slate-800">
+                              {perm.appName}
+                            </span>
+                          </div>
+                          <Badge
+                            variant={
+                              perm.role === "operator"
+                                ? "success"
+                                : perm.role === "viewer"
+                                  ? "info"
+                                  : "default"
+                            }
+                          >
+                            {perm.role === "operator"
+                              ? "Operator"
+                              : perm.role === "viewer"
+                                ? "Viewer"
+                                : "Tidak ada"}
+                          </Badge>
+                        </div>
+                        
+                        <div className="p-4 bg-white flex-1">
+                          <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-3">Fitur Terbuka</p>
+                          {(!perm.features || perm.features.length === 0) ? (
+                            <p className="text-xs text-slate-500 italic">Tidak ada fitur spesifik.</p>
+                          ) : (
+                            <ul className="space-y-2">
+                              {perm.features.map(featId => {
+                                const featLabel = availableFeatures.find(f => f.id === featId)?.label || featId;
+                                return (
+                                  <li key={featId} className="flex items-start gap-2 text-sm text-slate-700">
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                                    <span>{featLabel}</span>
+                                  </li>
+                                )
+                              })}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </CardBody>
@@ -180,7 +269,7 @@ export default function UserDetailPage() {
         open={showEdit}
         onClose={() => setShowEdit(false)}
         title="Edit Pengguna"
-        size="lg"
+        size="xl"
       >
         <UserForm
           initialData={user}

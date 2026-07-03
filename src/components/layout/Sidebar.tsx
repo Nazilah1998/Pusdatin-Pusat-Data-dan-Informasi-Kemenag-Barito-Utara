@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useApps } from "@/hooks/use-apps";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -11,6 +13,8 @@ import {
   BarChart3,
   LogOut,
   X,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 const navItems = [
@@ -28,6 +32,10 @@ interface SidebarProps {
 
 export function Sidebar({ onClose, onLogout }: SidebarProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const appId = searchParams.get("appId");
+  const { data: apps } = useApps();
+  const [penggunaOpen, setPenggunaOpen] = useState(false);
 
   return (
     <div className="flex h-full flex-col bg-white">
@@ -53,9 +61,77 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
         )}
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          const isActive = pathname === item.href && !appId;
+          const isPengguna = item.label === "Pengguna";
+
+          if (isPengguna) {
+            return (
+              <div key={item.href} className="space-y-1">
+                <button
+                  onClick={() => setPenggunaOpen(!penggunaOpen)}
+                  className={cn(
+                    "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    (pathname.startsWith(item.href) && !penggunaOpen && !appId)
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="h-5 w-5 shrink-0" />
+                    {item.label}
+                  </div>
+                  {penggunaOpen ? (
+                    <ChevronUp className="h-4 w-4 text-slate-400" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-slate-400" />
+                  )}
+                </button>
+                {penggunaOpen && (
+                  <div className="ml-8 mt-1 flex flex-col space-y-1 border-l border-slate-100 pl-3">
+                    <Link
+                      href={`${item.href}?type=internal_admin`}
+                      onClick={onClose}
+                      className={cn(
+                        "rounded-md px-3 py-2 text-sm font-medium transition-colors truncate",
+                        searchParams.get("type") === "internal_admin" || (!searchParams.get("type") && !appId)
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      )}
+                    >
+                      Admin Internal
+                    </Link>
+                    <Link
+                      href={`${item.href}?type=internal_pegawai`}
+                      onClick={onClose}
+                      className={cn(
+                        "rounded-md px-3 py-2 text-sm font-medium transition-colors truncate",
+                        searchParams.get("type") === "internal_pegawai"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      )}
+                    >
+                      Pegawai (PTSP)
+                    </Link>
+                    <Link
+                      href={`${item.href}?type=eksternal_masyarakat`}
+                      onClick={onClose}
+                      className={cn(
+                        "rounded-md px-3 py-2 text-sm font-medium transition-colors truncate",
+                        searchParams.get("type") === "eksternal_masyarakat"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      )}
+                    >
+                      Masyarakat Umum
+                    </Link>
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.href}
@@ -63,7 +139,7 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
               onClick={onClose}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive
+                (pathname === item.href || (pathname.startsWith(item.href + "/") && !appId))
                   ? "bg-emerald-50 text-emerald-700"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
               )}

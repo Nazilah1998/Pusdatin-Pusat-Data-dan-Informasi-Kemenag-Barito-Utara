@@ -4,10 +4,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import type { User } from "@/types";
 
-export function useUsers() {
+export function useUsers({ appId, userType }: { appId?: string; userType?: string } = {}) {
+  const params = new URLSearchParams();
+  if (appId) params.append("appId", appId);
+  if (userType) params.append("type", userType);
+  const qs = params.toString();
+
   return useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => api.get<User[]>("/users"),
+    queryKey: ["users", appId, userType],
+    queryFn: () => api.get<User[]>(`/users${qs ? `?${qs}` : ""}`),
   });
 }
 

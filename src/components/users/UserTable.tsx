@@ -2,8 +2,8 @@
 
 import { Table } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
-import { Avatar } from "@/components/ui/Avatar";
 import type { User } from "@/types";
+import { Pencil, Eye } from "lucide-react";
 
 interface UserTableProps {
   data: User[];
@@ -21,7 +21,13 @@ export function UserTable({ data, loading, onRowClick }: UserTableProps) {
           sortable: true,
           render: (user) => (
             <div className="flex items-center gap-3">
-              <Avatar name={user.name} size="sm" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 border border-slate-200">
+                <img
+                  src="/branding/kemenag.svg"
+                  alt="Kemenag"
+                  className="h-6 w-6 object-contain"
+                />
+              </div>
               <div>
                 <p className="font-medium text-slate-900">{user.name}</p>
                 <p className="text-xs text-slate-500">{user.email}</p>
@@ -38,16 +44,12 @@ export function UserTable({ data, loading, onRowClick }: UserTableProps) {
               variant={
                 user.role === "super_admin"
                   ? "info"
-                  : user.role === "operator"
-                    ? "success"
-                    : "default"
+                  : "default"
               }
             >
               {user.role === "super_admin"
                 ? "Super Admin"
-                : user.role === "operator"
-                  ? "Operator"
-                  : "Viewer"}
+                : "Admin"}
             </Badge>
           ),
         },
@@ -69,6 +71,25 @@ export function UserTable({ data, loading, onRowClick }: UserTableProps) {
             <span className="text-slate-500">
               {new Date(user.createdAt).toLocaleDateString("id-ID")}
             </span>
+          ),
+        },
+        {
+          key: "actions",
+          header: "Aksi",
+          sortable: false,
+          render: (user) => (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRowClick?.(user);
+                }}
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
+                title="Lihat / Edit"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+            </div>
           ),
         },
       ]}

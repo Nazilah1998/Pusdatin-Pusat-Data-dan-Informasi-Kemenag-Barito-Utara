@@ -92,7 +92,7 @@ export default function LoginPage() {
         </Card>
 
         <p className="mt-6 text-center text-xs text-slate-400">
-          &copy; {new Date().getFullYear()} Kemenag Barito Utara
+          &copy; {new Date().getFullYear()} Pusdatin Kemenag Barito Utara
         </p>
       </div>
     </div>

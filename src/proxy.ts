@@ -14,8 +14,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const hasSupabaseSession = request.cookies.has("sb-db-auth-token") ||
-    request.cookies.has("sb-db-auth-token-code-verifier");
+  const hasSupabaseSession = request.cookies.getAll().some(c =>
+    c.name.startsWith("sb-") && c.name.includes("auth-token")
+  );
 
   const isPublic = publicPaths.some(
     (path) => pathname === path || pathname.startsWith(path),

@@ -2,7 +2,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "super_admin" | "operator" | "viewer";
+  role: "super_admin" | "admin";
+  userType: "internal_admin" | "internal_pegawai" | "eksternal_masyarakat";
   status: "active" | "inactive";
   avatar?: string;
   createdAt: string;
@@ -14,17 +15,20 @@ export interface AppPermission {
   appId: string;
   appName: string;
   role: "operator" | "viewer" | "none";
+  features?: string[];
 }
 
 export interface SateliteApp {
   id: string;
   name: string;
   description: string;
-  icon: string;
-  url: string;
+  icon: string | null;
+  url: string | null;
   status: "online" | "maintenance" | "degraded";
   schema: string;
-  lastHealthCheck: string;
+  schemaName: string;
+  lastHealthCheck: Date | null;
+  availableFeatures?: { id: string, label: string }[];
 }
 
 export interface AuditLog {

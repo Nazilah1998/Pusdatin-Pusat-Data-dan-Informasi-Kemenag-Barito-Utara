@@ -28,7 +28,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b border-slate-100">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <img src="/branding/kemenag.svg" alt="Kemenag" className="h-10 w-10" />
             <div>
@@ -47,8 +47,8 @@ export default function LandingPage() {
       </header>
 
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto w-full px-4 pb-24 pt-16 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full text-center">
             <div className="mb-6 flex justify-center">
               <img src="/branding/kemenag.svg" alt="Kemenag" className="h-24 w-24" />
             </div>
@@ -77,8 +77,8 @@ export default function LandingPage() {
       </section>
 
       <section className="border-t border-slate-100 bg-slate-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto w-full px-4 py-20 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full text-center">
             <h2 className="text-3xl font-bold text-slate-900">Fitur Utama</h2>
             <p className="mt-2 text-slate-600">
               Portal Pusdatin menyediakan berbagai fitur untuk memudahkan pengelolaan sistem informasi.
@@ -105,9 +105,9 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t border-slate-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 lg:px-8">
+        <div className="mx-auto w-full px-4 py-8 text-center sm:px-6 lg:px-8">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} Kantor Kementerian Agama Kabupaten Barito Utara.
+            &copy; {new Date().getFullYear()} Pusdatin Kemenag Barito Utara.
           </p>
         </div>
       </footer>

@@ -194,10 +194,8 @@ export default function DashboardPage() {
                   </div>
                 </>
               ) : (
-                <div className="space-y-4">
-                  <ProgressBar label="CPU" value={45} />
-                  <ProgressBar label="RAM" value={62} />
-                  <ProgressBar label="Penyimpanan" value={38} />
+                <div className="py-8 text-center text-sm text-slate-500">
+                  Data tidak tersedia
                 </div>
               )}
             </CardBody>

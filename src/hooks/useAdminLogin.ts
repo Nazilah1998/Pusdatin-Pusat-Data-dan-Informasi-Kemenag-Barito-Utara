@@ -23,15 +23,23 @@ export function useAdminLogin() {
 
       setLoading(true);
       try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const returnTo = urlParams.get("returnTo");
+
         const res = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, turnstileToken }),
+          body: JSON.stringify({ email, password, turnstileToken, returnTo }),
         });
 
         const data = await res.json();
         if (!res.ok) {
           throw new Error(data.message || "Email atau password salah");
+        }
+
+        if (data.data?.ssoLink) {
+          window.location.href = data.data.ssoLink;
+          return;
         }
 
         router.push("/dashboard");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -9,13 +9,18 @@ import { Dialog } from "@/components/ui/Dialog";
 import { UserTable } from "@/components/users/UserTable";
 import { UserForm } from "@/components/users/UserForm";
 import { useUsers, useCreateUser } from "@/hooks/use-users";
+import { useApps } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
 import type { User } from "@/types";
 import { Plus, Search } from "lucide-react";
 
 export default function UsersPage() {
   const router = useRouter();
-  const { data: users, isLoading } = useUsers();
+  const searchParams = useSearchParams();
+  const appId = searchParams.get("appId") || undefined;
+  const userType = searchParams.get("type") || "internal_admin";
+  const { data: users, isLoading } = useUsers({ appId, userType });
+  const { data: apps } = useApps();
   const createUser = useCreateUser();
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
@@ -36,13 +41,25 @@ export default function UsersPage() {
     }
   };
 
+    const currentApp = apps?.find((a) => a.id === appId);
+    let title = "Manajemen Pengguna";
+    if (currentApp) {
+      title = `Pengguna - ${currentApp.name}`;
+    } else if (userType === "internal_admin") {
+      title = "Admin Internal";
+    } else if (userType === "internal_pegawai") {
+      title = "Pegawai (PTSP)";
+    } else if (userType === "eksternal_masyarakat") {
+      title = "Masyarakat Umum";
+    }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Manajemen Pengguna</h1>
+          <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Kelola data pengguna dan hak akses aplikasi
+            {currentApp ? `Kelola hak akses khusus untuk ${currentApp.name}` : `Kelola data ${title}`}
           </p>
         </div>
         <Button icon={<Plus className="h-4 w-4" />} onClick={() => setShowCreate(true)}>
@@ -75,9 +92,10 @@ export default function UsersPage() {
         open={showCreate}
         onClose={() => setShowCreate(false)}
         title="Tambah Pengguna Baru"
-        size="lg"
+        size="xl"
       >
         <UserForm
+          defaultUserType={userType}
           onSubmit={handleCreate}
           onCancel={() => setShowCreate(false)}
           loading={createUser.isPending}

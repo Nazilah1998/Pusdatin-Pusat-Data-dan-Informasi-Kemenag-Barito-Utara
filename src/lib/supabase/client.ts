@@ -8,5 +8,9 @@ export function createBrowserSupabaseClient() {
   if (!url) throw new Error("NEXT_PUBLIC_SUPABASE_URL tidak tersedia");
   if (!key) throw new Error("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY tidak tersedia");
 
-  return createBrowserClient(url, key);
+  return createBrowserClient(url, key, {
+    cookieOptions: {
+      name: "sb-pusdatin-auth-token",
+    },
+  });
 }

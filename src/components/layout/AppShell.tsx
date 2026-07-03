@@ -1,17 +1,33 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useUIStore } from "@/stores/ui-store";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { sidebarOpen, setSidebarOpen } = useUIStore();
+  const router = useRouter();
+  const { logout, checkSession } = useAuth();
+  
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 lg:flex">
       <aside className="hidden lg:block lg:w-64 lg:shrink-0">
         <div className="sticky top-0 h-screen border-r border-slate-200 bg-white">
-          <Sidebar />
+          <Sidebar onLogout={handleLogout} />
         </div>
       </aside>
 
@@ -22,7 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           />
           <div className="relative flex h-full w-[280px] flex-col border-r border-slate-200 bg-white shadow-2xl">
-            <Sidebar onClose={() => setSidebarOpen(false)} />
+            <Sidebar onClose={() => setSidebarOpen(false)} onLogout={handleLogout} />
           </div>
         </div>
       )}

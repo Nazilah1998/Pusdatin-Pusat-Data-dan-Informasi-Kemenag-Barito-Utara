@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       return apiResponse({ message: "Terlalu banyak percobaan login. Silakan coba lagi nanti." }, 429);
     }
 
-    const { email, password, turnstileToken } = await request.json();
+    const { email, password, turnstileToken, returnTo: bodyReturnTo } = await request.json();
 
     if (!email || !password || !turnstileToken) {
       return apiResponse({ message: "Email, password, dan verifikasi keamanan wajib diisi" }, 400);
@@ -45,9 +45,9 @@ export async function POST(request: NextRequest) {
       return apiResponse({ message: "Email atau password salah" }, 401);
     }
 
-    const session = await getCurrentSessionContext();
+    const session = await getCurrentSessionContext(authData.user);
     if (!session.isAdmin) {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: "local" });
       return apiResponse({ message: "Akun ini tidak memiliki akses ke portal Pusdatin" }, 403);
     }
 
@@ -58,6 +58,29 @@ export async function POST(request: NextRequest) {
       performedBy: authData.user.email ?? "unknown",
       ip,
     });
+
+    const returnTo = bodyReturnTo || new URL(request.url).searchParams.get('returnTo');
+
+    if (returnTo) {
+      // SSO Magic Link generation
+      const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
+      const adminClient = createAdminSupabaseClient();
+      const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
+        type: 'magiclink',
+        email: authData.user.email!,
+        options: {
+          redirectTo: returnTo
+        }
+      });
+
+      if (!linkError && linkData?.properties?.action_link) {
+        return apiResponse({
+          user: session.user,
+          token: authData.session?.access_token ?? "",
+          ssoLink: linkData.properties.action_link
+        });
+      }
+    }
 
     return apiResponse({
       user: session.user,

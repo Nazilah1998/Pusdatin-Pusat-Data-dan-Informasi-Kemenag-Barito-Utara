@@ -10,13 +10,15 @@ interface DialogProps {
   title?: string;
   children: React.ReactNode;
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl" | "full";
 }
 
 const sizeStyles = {
   sm: "max-w-sm",
   md: "max-w-lg",
   lg: "max-w-2xl",
+  xl: "max-w-5xl",
+  full: "max-w-[95vw]",
 };
 
 export function Dialog({ open, onClose, title, children, className, size = "md" }: DialogProps) {
