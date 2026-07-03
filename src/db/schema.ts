@@ -9,7 +9,7 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 
-export const pusdatin = pgSchema("pusdatin");
+export const pusdatin = pgSchema("website_pusdatin");
 
 export const users = pusdatin.table("users", {
   id: uuid("id").primaryKey().defaultRandom(),

@@ -42,7 +42,7 @@ export async function PUT(
     await recordAudit({
       action: "UPDATE",
       target: `app:${app.name}`,
-      targetSchema: "pusdatin",
+      targetSchema: "website_pusdatin",
       performedBy: session.user?.email ?? "unknown",
       ip: getClientIp(request),
       beforeState: { status: app.status },

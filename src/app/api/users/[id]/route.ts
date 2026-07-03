@@ -19,6 +19,7 @@ export async function GET(
     }
 
     const { id } = await params;
+    console.log("[DEBUG] API GET /api/users/[id] called with params:", await params, "extracted id:", id);
 
     const [user] = await db
       .select({
@@ -52,8 +53,8 @@ export async function GET(
 
     return apiResponse({
       ...user,
-      createdAt: user.createdAt?.toISOString() ?? null,
-      updatedAt: user.updatedAt?.toISOString() ?? null,
+      createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : user.createdAt,
+      updatedAt: user.updatedAt instanceof Date ? user.updatedAt.toISOString() : user.updatedAt,
       appPermissions: perms,
     });
   } catch (err) {
@@ -111,7 +112,7 @@ export async function PUT(
       await recordAudit({
         action: "UPDATE",
         target: `user:${oldUser.email}`,
-        targetSchema: "pusdatin",
+        targetSchema: "website_pusdatin",
         performedBy: session.user?.email ?? "unknown",
         ip: getClientIp(request),
         beforeState: { name: oldUser.name, email: oldUser.email, role: oldUser.role },
@@ -226,7 +227,7 @@ export async function DELETE(
       await recordAudit({
         action: "DELETE",
         target: `user:${user.email}`,
-        targetSchema: "pusdatin",
+        targetSchema: "website_pusdatin",
         performedBy: session.user?.email ?? "unknown",
         ip: getClientIp(request),
         beforeState: { name: user.name, email: user.email, role: user.role },

@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     await recordAudit({
       action: "INSERT",
       target: `login:${authData.user.email}`,
-      targetSchema: "pusdatin",
+      targetSchema: "website_pusdatin",
       performedBy: authData.user.email ?? "unknown",
       ip,
     });

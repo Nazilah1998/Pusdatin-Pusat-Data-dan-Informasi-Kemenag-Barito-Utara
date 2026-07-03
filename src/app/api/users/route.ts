@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     await recordAudit({
       action: "INSERT",
       target: `user:${newUser.email}`,
-      targetSchema: "pusdatin",
+      targetSchema: "website_pusdatin",
       performedBy: session.user?.email ?? "unknown",
       ip: getClientIp(request),
       afterState: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role },

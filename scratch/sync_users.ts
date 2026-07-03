@@ -41,7 +41,7 @@ async function run() {
       for (const sUser of satelliteUsers.rows) {
         if (!sUser.email) continue; // skip users without email
 
-        // 1. Upsert ke pusdatin.users
+        // 1. Upsert ke website_pusdatin.users
         const [pUser] = await db.insert(pusdatinUsers)
           .values({
             name: (sUser.name as string) || "Unknown",
@@ -59,7 +59,7 @@ async function run() {
           })
           .returning();
 
-        // 2. Insert ke pusdatin.app_permissions
+        // 2. Insert ke website_pusdatin.app_permissions
         // We assume the satellite user has a role like 'admin', 'operator', or 'viewer'.
         // If they are in the satellite table, they at least have 'viewer' access.
         let permRole = "viewer";
