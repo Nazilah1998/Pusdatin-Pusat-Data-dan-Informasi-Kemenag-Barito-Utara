@@ -1,0 +1,29 @@
+"use client";
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api-client";
+import type { SateliteApp, SystemHealth } from "@/types";
+
+export function useApps() {
+  return useQuery<SateliteApp[]>({
+    queryKey: ["apps"],
+    queryFn: () => api.get<SateliteApp[]>("/apps"),
+  });
+}
+
+export function useToggleMaintenance() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ appId, status }: { appId: string; status: SateliteApp["status"] }) =>
+      api.put<SateliteApp>(`/apps/${appId}/status`, { status }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["apps"] }),
+  });
+}
+
+export function useSystemHealth() {
+  return useQuery<SystemHealth>({
+    queryKey: ["system-health"],
+    queryFn: () => api.get<SystemHealth>("/system/health"),
+    refetchInterval: 30000,
+  });
+}
