@@ -4,6 +4,7 @@ interface ProgressBarProps {
   value: number;
   max?: number;
   label?: string;
+  subtitle?: string;
   showValue?: boolean;
   variant?: "default" | "danger" | "warning";
   className?: string;
@@ -19,6 +20,7 @@ export function ProgressBar({
   value,
   max = 100,
   label,
+  subtitle,
   showValue = true,
   variant = "default",
   className,
@@ -28,9 +30,12 @@ export function ProgressBar({
   return (
     <div className={cn("space-y-1", className)}>
       {(label || showValue) && (
-        <div className="flex justify-between text-sm">
-          {label && <span className="text-slate-600">{label}</span>}
-          {showValue && <span className="font-medium text-slate-900">{Math.round(pct)}%</span>}
+        <div className="flex justify-between text-sm items-end gap-2">
+          <div className="flex flex-col min-w-0">
+            {label && <span className="text-slate-600 truncate">{label}</span>}
+            {subtitle && <span className="text-xs text-slate-400 mt-0.5 truncate">{subtitle}</span>}
+          </div>
+          {showValue && <span className="font-medium text-slate-900 shrink-0">{Math.round(pct)}%</span>}
         </div>
       )}
       <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">

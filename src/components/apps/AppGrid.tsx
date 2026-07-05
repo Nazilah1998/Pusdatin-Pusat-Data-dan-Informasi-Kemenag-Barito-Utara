@@ -121,7 +121,7 @@ export function AppGrid({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-xl" />
 
-              <CardBody className="relative flex h-full flex-col p-5">
+              <CardBody className="relative flex h-full flex-col p-4 sm:p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-1 items-center gap-4 min-w-0">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 text-sm font-bold text-emerald-700 shadow-inner ring-1 ring-emerald-200/50 transition-transform duration-300 group-hover:scale-110 overflow-hidden">
@@ -154,15 +154,15 @@ export function AppGrid({
                   </button>
                 </div>
 
-                <div className="mt-5 mb-5 grid grid-cols-2 gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-3 text-[11px] text-slate-600">
+                <div className="mt-5 mb-5 grid grid-cols-2 gap-2 sm:gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-2 sm:p-3 text-[10px] sm:text-[11px] text-slate-600">
                   <div className="flex flex-col gap-1.5 overflow-hidden">
                     <div className="flex items-center gap-1.5 font-semibold text-slate-500">
-                      <Database className="h-3.5 w-3.5" />
-                      Schema DB
+                      <Database className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">Schema DB</span>
                     </div>
-                    <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="flex items-center gap-1.5 w-full">
                       <span
-                        className="truncate font-medium text-slate-700 bg-white px-2 py-1 rounded-md border border-slate-100"
+                        className="flex-1 min-w-0 truncate font-medium text-slate-700 bg-white px-2 py-1 rounded-md border border-slate-100"
                         title={app.schemaName || app.schema}
                       >
                         {app.schemaName || app.schema}
@@ -182,12 +182,12 @@ export function AppGrid({
                   </div>
                   <div className="flex flex-col gap-1.5 overflow-hidden">
                     <div className="flex items-center gap-1.5 font-semibold text-slate-500">
-                      <Globe className="h-3.5 w-3.5" />
-                      URL Website
+                      <Globe className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">URL Website</span>
                     </div>
-                    <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="flex items-center gap-1.5 w-full">
                       <span
-                        className="truncate font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100/50"
+                        className="flex-1 min-w-0 truncate font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100/50"
                         title={app.url || ""}
                       >
                         {app.url ? new URL(app.url).hostname : "Belum diatur"}
@@ -207,7 +207,7 @@ export function AppGrid({
                   </div>
                 </div>
 
-                <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
+                <div className="mt-auto flex flex-wrap items-center justify-between border-t border-slate-100 pt-4 gap-3">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                       <div
@@ -245,7 +245,7 @@ export function AppGrid({
 
                   <Dropdown
                     trigger={
-                      <button className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 hover:text-emerald-800">
+                      <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 hover:text-emerald-800">
                         Buka di local
                         <Server className="h-3.5 w-3.5" />
                       </button>

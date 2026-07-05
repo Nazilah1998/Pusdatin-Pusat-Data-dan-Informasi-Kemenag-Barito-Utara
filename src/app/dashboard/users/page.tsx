@@ -24,7 +24,8 @@ export default function UsersPage() {
   const createUser = useCreateUser();
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<"super_admin" | "admin" | "sub_admin">("super_admin");
+  const tabParam = searchParams.get("tab") as "super_admin" | "admin" | "sub_admin";
+  const [activeTab, setActiveTab] = useState<"super_admin" | "admin" | "sub_admin">(tabParam || "super_admin");
 
   const filtered = users?.filter(
     (u) =>
@@ -75,7 +76,12 @@ export default function UsersPage() {
               {(["super_admin", "admin", "sub_admin"] as const).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => {
+                    setActiveTab(tab);
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.set("tab", tab);
+                    router.push(`/dashboard/users?${params.toString()}`);
+                  }}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                     activeTab === tab
                       ? "bg-white text-emerald-600 shadow-sm"

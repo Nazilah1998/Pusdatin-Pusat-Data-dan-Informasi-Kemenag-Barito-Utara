@@ -86,7 +86,16 @@ export default function UserDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => router.back()}>
+          <Button variant="ghost" size="sm" onClick={() => {
+            if (user) {
+              const params = new URLSearchParams();
+              if (user.userType) params.set("type", user.userType);
+              if (user.role && user.userType === "internal_admin") params.set("tab", user.role);
+              router.push(`/dashboard/users?${params.toString()}`);
+            } else {
+              router.back();
+            }
+          }}>
             <ArrowLeft className="h-5 w-5 text-slate-500" />
           </Button>
           <div className="flex items-center gap-4">

@@ -83,6 +83,7 @@ export default function AppsPage() {
               <div className="flex-1">
                 <ProgressBar
                   label="CPU"
+                  subtitle={health?.cpuCores ? `${health.cpuCores} Cores` : undefined}
                   value={health?.cpu ?? 0}
                   variant={
                     (health?.cpu ?? 0) > 80
@@ -105,6 +106,7 @@ export default function AppsPage() {
               <div className="flex-1">
                 <ProgressBar
                   label="RAM"
+                  subtitle={health?.ramTotalGb ? `${health.ramUsedGb} GB / ${health.ramTotalGb} GB` : undefined}
                   value={health?.ram ?? 0}
                   variant={
                     (health?.ram ?? 0) > 80
@@ -127,6 +129,7 @@ export default function AppsPage() {
               <div className="flex-1">
                 <ProgressBar
                   label="Penyimpanan"
+                  subtitle={health?.storageTotalGb ? `${health.storageUsedGb} GB / ${health.storageTotalGb} GB` : undefined}
                   value={health?.storage ?? 0}
                   variant={
                     (health?.storage ?? 0) > 80

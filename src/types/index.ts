@@ -49,6 +49,11 @@ export interface SystemHealth {
   ram: number;
   storage: number;
   uptime: string;
+  cpuCores?: number;
+  ramUsedGb?: string | number;
+  ramTotalGb?: string | number;
+  storageUsedGb?: string | number;
+  storageTotalGb?: string | number;
 }
 
 export interface DashboardStats {

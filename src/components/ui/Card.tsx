@@ -15,19 +15,19 @@ export function Card({ className, children }: CardProps) {
 
 export function CardHeader({ className, children }: CardProps) {
   return (
-    <div className={cn("flex items-center justify-between border-b border-slate-100 px-6 py-4", className)}>
+    <div className={cn("flex items-center justify-between border-b border-slate-100 px-4 sm:px-6 py-4", className)}>
       {children}
     </div>
   );
 }
 
 export function CardBody({ className, children }: CardProps) {
-  return <div className={cn("px-6 py-4", className)}>{children}</div>;
+  return <div className={cn("px-4 sm:px-6 py-4", className)}>{children}</div>;
 }
 
 export function CardFooter({ className, children }: CardProps) {
   return (
-    <div className={cn("border-t border-slate-100 px-6 py-3", className)}>
+    <div className={cn("border-t border-slate-100 px-4 sm:px-6 py-3", className)}>
       {children}
     </div>
   );

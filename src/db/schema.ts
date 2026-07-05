@@ -7,6 +7,7 @@ import {
   integer,
   varchar,
   boolean,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 export const pusdatin = pgSchema("kemenag_pusdatin");
@@ -65,5 +66,10 @@ export const systemMetrics = pusdatin.table("system_metrics", {
   ram: integer("ram").notNull().default(0),
   storage: integer("storage").notNull().default(0),
   uptime: varchar("uptime", { length: 100 }),
+  cpuCores: integer("cpu_cores").notNull().default(0),
+  ramUsedGb: numeric("ram_used_gb", { precision: 8, scale: 2 }).default("0"),
+  ramTotalGb: numeric("ram_total_gb", { precision: 8, scale: 2 }).default("0"),
+  storageUsedGb: numeric("storage_used_gb", { precision: 10, scale: 2 }).default("0"),
+  storageTotalGb: numeric("storage_total_gb", { precision: 10, scale: 2 }).default("0"),
   recordedAt: timestamp("recorded_at").defaultNow().notNull(),
 });
