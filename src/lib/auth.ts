@@ -69,7 +69,8 @@ export async function getCurrentSessionContext(serverUser?: User | null): Promis
       isAuthenticated: true,
       isAdmin: role === "super_admin",
     };
-  } catch {
+  } catch (error) {
+    console.error("[AUTH] getCurrentSessionContext error:", error);
     return { user: null, isAuthenticated: false, isAdmin: false };
   }
 }

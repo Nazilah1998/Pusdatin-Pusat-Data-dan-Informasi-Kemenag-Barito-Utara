@@ -5,25 +5,35 @@ import { eq } from "drizzle-orm";
 
 export const dynamic = 'force-dynamic';
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: corsHeaders });
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> } // Since Next.js 15, params is a Promise. Our version is 16.2.3.
 ) {
   try {
     const { id } = await params;
-    
+
     const [app] = await db
       .select({ status: satelliteApps.status })
       .from(satelliteApps)
       .where(eq(satelliteApps.id, id));
 
     if (!app) {
-      return NextResponse.json({ status: "online" }); // Fallback for unknown apps
+      return NextResponse.json({ status: "online" }, { headers: corsHeaders }); // Fallback for unknown apps
     }
 
-    return NextResponse.json({ status: app.status });
+    return NextResponse.json({ status: app.status }, { headers: corsHeaders });
   } catch (err) {
     console.error("[PUBLIC APPS STATUS] GET error:", err);
-    return NextResponse.json({ status: "online" }); // Fallback on error to not break apps
+    return NextResponse.json({ status: "online" }, { headers: corsHeaders }); // Fallback on error to not break apps
   }
 }

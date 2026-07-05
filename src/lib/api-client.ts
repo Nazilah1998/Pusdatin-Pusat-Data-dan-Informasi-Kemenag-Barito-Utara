@@ -12,6 +12,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   }
 
   const res = await fetch(url, {
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-cache, no-store, must-revalidate",

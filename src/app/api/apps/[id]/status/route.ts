@@ -7,6 +7,8 @@ import { recordAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rate-limit";
 import { eq } from "drizzle-orm";
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
