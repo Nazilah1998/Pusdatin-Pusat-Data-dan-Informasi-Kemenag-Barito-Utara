@@ -14,8 +14,12 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const res = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
       ...fetchOptions.headers,
     },
+    cache: "no-store",
     ...fetchOptions,
   });
 
@@ -36,6 +40,9 @@ export const api = {
 
   put: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
     request<T>(endpoint, { ...options, method: "PUT", body: body ? JSON.stringify(body) : undefined }),
+
+  patch: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
+    request<T>(endpoint, { ...options, method: "PATCH", body: body ? JSON.stringify(body) : undefined }),
 
   delete: <T>(endpoint: string, options?: RequestOptions) =>
     request<T>(endpoint, { ...options, method: "DELETE" }),

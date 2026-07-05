@@ -20,11 +20,15 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
     const search = searchParams.get("search");
+    const targetSchema = searchParams.get("targetSchema");
 
     const conditions: ReturnType<typeof eq>[] = [];
 
     if (actionFilter) {
       conditions.push(eq(auditLogs.action, actionFilter));
+    }
+    if (targetSchema) {
+      conditions.push(eq(auditLogs.targetSchema, targetSchema));
     }
     if (startDate) {
       conditions.push(gte(auditLogs.timestamp, new Date(startDate)));

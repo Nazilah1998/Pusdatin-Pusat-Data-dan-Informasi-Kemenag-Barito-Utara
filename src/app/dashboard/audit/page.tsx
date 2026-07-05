@@ -15,11 +15,21 @@ export default function AuditPage() {
   const [search, setSearch] = useState("");
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
 
+  const [schemaTab, setSchemaTab] = useState("");
+
   const { data, isLoading } = useAuditLogs({
     action: action || undefined,
     search: search || undefined,
+    targetSchema: schemaTab || undefined,
     limit: 50,
   });
+
+  const tabs = [
+    { id: "", label: "Semua Sistem" },
+    { id: "kemenag_pusdatin", label: "Pusdatin (Pusat)" },
+    { id: "e-surat-kemenag", label: "Si MANDAU" },
+    { id: "arsip_kemenag", label: "Si BETANG" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -28,6 +38,26 @@ export default function AuditPage() {
         <p className="mt-1 text-sm text-slate-500">
           Catatan perubahan data yang dilakukan oleh administrator
         </p>
+      </div>
+
+      <div className="flex space-x-1 rounded-xl bg-slate-100 p-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setSchemaTab(tab.id)}
+            className={`
+              w-full rounded-lg py-2.5 text-sm font-medium leading-5
+              ring-white ring-opacity-60 ring-offset-2 ring-offset-emerald-400 focus:outline-none focus:ring-2
+              ${
+                schemaTab === tab.id
+                  ? "bg-white text-emerald-700 shadow"
+                  : "text-slate-600 hover:bg-white/[0.12] hover:text-slate-800"
+              }
+            `}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <Card>

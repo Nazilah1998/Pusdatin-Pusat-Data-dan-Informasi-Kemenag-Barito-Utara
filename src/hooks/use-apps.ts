@@ -20,6 +20,24 @@ export function useToggleMaintenance() {
   });
 }
 
+export function useBulkToggleMaintenance() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ status }: { status: SateliteApp["status"] }) =>
+      api.post<{ message: string }>(`/apps/bulk-status`, { status }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["apps"] }),
+  });
+}
+
+export function useUpdateApp() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ appId, data }: { appId: string; data: Partial<SateliteApp> }) =>
+      api.patch<{ message: string }>(`/apps/${appId}`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["apps"] }),
+  });
+}
+
 export function useSystemHealth() {
   return useQuery<SystemHealth>({
     queryKey: ["system-health"],

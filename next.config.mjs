@@ -6,6 +6,23 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  async headers() {
+    return [
+      {
+        source: "/maintenance",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors *;",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "ALLOWALL",
+          }
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

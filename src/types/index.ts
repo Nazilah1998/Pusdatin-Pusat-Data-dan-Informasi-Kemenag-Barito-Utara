@@ -2,7 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "super_admin" | "admin";
+  role: "super_admin" | "admin" | "sub_admin";
   userType: "internal_admin" | "internal_pegawai" | "eksternal_masyarakat";
   status: "active" | "inactive";
   avatar?: string;
@@ -27,7 +27,9 @@ export interface SateliteApp {
   status: "online" | "maintenance" | "degraded";
   schema: string;
   schemaName: string;
+  schemaUrl?: string | null;
   lastHealthCheck: Date | null;
+  sortOrder: number;
   availableFeatures?: { id: string, label: string }[];
 }
 

@@ -28,12 +28,14 @@ export const satelliteApps = pusdatin.table("satellite_apps", {
   id: varchar("id", { length: 50 }).primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  icon: varchar("icon", { length: 50 }),
+  icon: varchar("icon", { length: 500 }),
   url: varchar("url", { length: 500 }),
   schemaName: varchar("schema_name", { length: 100 }).notNull(),
+  schemaUrl: varchar("schema_url", { length: 500 }),
   status: varchar("status", { length: 20 }).notNull().default("online"),
   lastHealthCheck: timestamp("last_health_check"),
   availableFeatures: jsonb("available_features"),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

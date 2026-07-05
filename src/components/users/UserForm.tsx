@@ -11,6 +11,7 @@ import { useApps } from "@/hooks/use-apps";
 const roleOptions = [
   { value: "super_admin", label: "Super Admin" },
   { value: "admin", label: "Admin" },
+  { value: "sub_admin", label: "Sub Admin" },
 ];
 
 const userTypeOptions = [

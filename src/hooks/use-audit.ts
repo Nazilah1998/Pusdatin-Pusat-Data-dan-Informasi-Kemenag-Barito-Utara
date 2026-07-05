@@ -11,6 +11,7 @@ interface AuditFilters {
   startDate?: string;
   endDate?: string;
   search?: string;
+  targetSchema?: string;
 }
 
 export function useAuditLogs(filters?: AuditFilters) {
@@ -24,6 +25,7 @@ export function useAuditLogs(filters?: AuditFilters) {
       if (filters?.startDate) params.startDate = filters.startDate;
       if (filters?.endDate) params.endDate = filters.endDate;
       if (filters?.search) params.search = filters.search;
+      if (filters?.targetSchema) params.targetSchema = filters.targetSchema;
       return api.get("/audit-logs", { params });
     },
   });

@@ -156,11 +156,15 @@ export default function UserDetailPage() {
                     variant={
                       user.role === "super_admin"
                         ? "info"
+                        : user.role === "sub_admin"
+                        ? "secondary"
                         : "default"
                     }
                   >
                     {user.role === "super_admin"
                       ? "Super Admin"
+                      : user.role === "sub_admin"
+                      ? "Sub Admin"
                       : "Admin"}
                   </Badge>
                 </div>

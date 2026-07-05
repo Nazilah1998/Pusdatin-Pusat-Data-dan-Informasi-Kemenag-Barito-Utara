@@ -14,9 +14,10 @@ interface DropdownProps {
   trigger: React.ReactNode;
   items: DropdownItem[];
   align?: "left" | "right";
+  position?: "top" | "bottom";
 }
 
-export function Dropdown({ trigger, items, align = "right" }: DropdownProps) {
+export function Dropdown({ trigger, items, align = "right", position = "bottom" }: DropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -36,8 +37,9 @@ export function Dropdown({ trigger, items, align = "right" }: DropdownProps) {
       {open && (
         <div
           className={cn(
-            "absolute z-50 mt-1 min-w-[180px] animate-fade-in overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-lg",
+            "absolute z-50 min-w-[180px] animate-fade-in overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-lg",
             align === "right" ? "right-0" : "left-0",
+            position === "top" ? "bottom-full mb-1" : "top-full mt-1"
           )}
         >
           {items.map((item, i) => (
