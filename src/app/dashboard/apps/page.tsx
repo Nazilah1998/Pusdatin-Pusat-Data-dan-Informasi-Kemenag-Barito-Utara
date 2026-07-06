@@ -4,10 +4,11 @@ import { useState } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AppGrid } from "@/components/apps/AppGrid";
-import { useApps, useToggleMaintenance, useSystemHealth, useBulkToggleMaintenance } from "@/hooks/use-apps";
+import { AppForm } from "@/components/apps/AppForm";
+import { useApps, useToggleMaintenance, useSystemHealth, useBulkToggleMaintenance, useCreateApp } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
 import type { SateliteApp } from "@/types";
-import { Cpu, HardDrive, MemoryStick, AlertTriangle, Settings2, CheckCircle2 } from "lucide-react";
+import { Cpu, HardDrive, MemoryStick, AlertTriangle, Settings2, CheckCircle2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Dialog } from "@/components/ui/Dialog";
@@ -16,8 +17,10 @@ export default function AppsPage() {
   const { data: apps, isLoading } = useApps();
   const toggleMutation = useToggleMaintenance();
   const bulkToggleMutation = useBulkToggleMaintenance();
+  const createAppMutation = useCreateApp();
   const { data: health } = useSystemHealth();
   const [confirmBulkStatus, setConfirmBulkStatus] = useState<"online" | "maintenance" | null>(null);
+  const [showAddApp, setShowAddApp] = useState(false);
 
   const handleToggle = async (appId: string, status: SateliteApp["status"]) => {
     try {
@@ -40,6 +43,16 @@ export default function AppsPage() {
     }
   };
 
+  const handleCreateApp = async (data: Partial<SateliteApp>) => {
+    try {
+      await createAppMutation.mutateAsync(data);
+      toast("success", "Aplikasi satelit berhasil ditambahkan");
+      setShowAddApp(false);
+    } catch {
+      toast("error", "Gagal menambahkan aplikasi");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -49,28 +62,32 @@ export default function AppsPage() {
             Kelola status operasional dan pantau kesehatan sistem
           </p>
         </div>
-        
-        <Dropdown
-          trigger={
-            <Button className="gap-2">
-              <Settings2 className="h-4 w-4" />
-              Kontrol Global
-            </Button>
-          }
-          items={[
-            {
-              label: "Set Semua Online",
-              icon: <CheckCircle2 className="h-4 w-4" />,
-              onClick: () => setConfirmBulkStatus("online"),
-            },
-            {
-              label: "Set Semua Maintenance",
-              icon: <AlertTriangle className="h-4 w-4" />,
-              danger: true,
-              onClick: () => setConfirmBulkStatus("maintenance"),
-            },
-          ]}
-        />
+        <div className="flex items-center gap-2">
+          <Button icon={<Plus className="h-4 w-4" />} onClick={() => setShowAddApp(true)}>
+            Tambah Aplikasi
+          </Button>
+          <Dropdown
+            trigger={
+              <Button className="gap-2" variant="outline">
+                <Settings2 className="h-4 w-4" />
+                Kontrol Global
+              </Button>
+            }
+            items={[
+              {
+                label: "Set Semua Online",
+                icon: <CheckCircle2 className="h-4 w-4" />,
+                onClick: () => setConfirmBulkStatus("online"),
+              },
+              {
+                label: "Set Semua Maintenance",
+                icon: <AlertTriangle className="h-4 w-4" />,
+                danger: true,
+                onClick: () => setConfirmBulkStatus("maintenance"),
+              },
+            ]}
+          />
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -186,6 +203,18 @@ export default function AppsPage() {
             </Button>
           </div>
         </div>
+      </Dialog>
+
+      <Dialog
+        open={showAddApp}
+        onClose={() => setShowAddApp(false)}
+        title="Tambah Aplikasi Satelit Baru"
+      >
+        <AppForm
+          onSubmit={handleCreateApp}
+          onCancel={() => setShowAddApp(false)}
+          loading={createAppMutation.isPending}
+        />
       </Dialog>
     </div>
   );

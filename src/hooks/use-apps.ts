@@ -45,3 +45,11 @@ export function useSystemHealth() {
     refetchInterval: 10000,
   });
 }
+
+export function useCreateApp() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Partial<SateliteApp>) => api.post<SateliteApp>("/apps", data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["apps"] }),
+  });
+}

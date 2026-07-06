@@ -21,3 +21,48 @@ export async function GET() {
     return apiResponse({ message: "Internal server error" }, 500);
   }
 }
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getCurrentSessionContext();
+    if (!session.isAdmin) {
+      return apiResponse({ message: "Unauthorized" }, 401);
+    }
+
+    const body = await req.json();
+    const { id, name, description, icon, url, schemaName, schemaUrl, status, sortOrder } = body;
+
+    if (!id || !name || !schemaName) {
+      return apiResponse({ message: "ID, Nama, dan Schema Name wajib diisi" }, 400);
+    }
+
+    // Check if ID already exists
+    const [existing] = await db
+      .select({ id: satelliteApps.id })
+      .from(satelliteApps)
+      .where(eq(satelliteApps.id, id))
+      .limit(1);
+
+    if (existing) {
+      return apiResponse({ message: "ID Aplikasi sudah digunakan" }, 400);
+    }
+
+    const newApp = await db.insert(satelliteApps).values({
+      id,
+      name,
+      description,
+      icon,
+      url,
+      schemaName,
+      schemaUrl,
+      status: status || "online",
+      sortOrder: sortOrder || 0,
+      availableFeatures: [],
+    }).returning();
+
+    return apiResponse(newApp[0], 201);
+  } catch (err) {
+    console.error("[APPS] POST error:", err);
+    return apiResponse({ message: "Internal server error" }, 500);
+  }
+}

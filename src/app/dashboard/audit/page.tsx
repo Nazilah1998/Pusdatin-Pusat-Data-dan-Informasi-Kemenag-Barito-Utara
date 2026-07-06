@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { AuditTable } from "@/components/audit/AuditTable";
 import { AuditFilters } from "@/components/audit/AuditFilters";
 import { useAuditLogs } from "@/hooks/use-audit";
+import { useApps } from "@/hooks/use-apps";
 import { formatDate } from "@/lib/utils";
 import type { AuditLog } from "@/types";
 
@@ -16,6 +17,8 @@ export default function AuditPage() {
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
 
   const [schemaTab, setSchemaTab] = useState("");
+
+  const { data: apps } = useApps();
 
   const { data, isLoading } = useAuditLogs({
     action: action || undefined,
@@ -27,8 +30,10 @@ export default function AuditPage() {
   const tabs = [
     { id: "", label: "Semua Sistem" },
     { id: "kemenag_pusdatin", label: "Pusdatin (Pusat)" },
-    { id: "e-surat-kemenag", label: "Si MANDAU" },
-    { id: "arsip_kemenag", label: "Si BETANG" },
+    ...(apps || []).map((app: any) => ({
+      id: app.schemaName || app.id,
+      label: app.name,
+    })),
   ];
 
   return (
@@ -40,18 +45,17 @@ export default function AuditPage() {
         </p>
       </div>
 
-      <div className="flex space-x-1 rounded-xl bg-slate-100 p-1">
+      <div className="flex flex-wrap gap-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setSchemaTab(tab.id)}
             className={`
-              w-full rounded-lg py-2.5 text-sm font-medium leading-5
-              ring-white ring-opacity-60 ring-offset-2 ring-offset-emerald-400 focus:outline-none focus:ring-2
+              inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-200
               ${
                 schemaTab === tab.id
-                  ? "bg-white text-emerald-700 shadow"
-                  : "text-slate-600 hover:bg-white/[0.12] hover:text-slate-800"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20 ring-1 ring-emerald-600"
+                  : "bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-slate-200 shadow-sm"
               }
             `}
           >
