@@ -59,32 +59,17 @@ export async function POST(request: NextRequest) {
       ip,
     });
 
+    const mfaEnrolled = authData.user.factors && authData.user.factors.some(f => f.factor_type === 'totp' && f.status === 'verified');
+
     const returnTo = bodyReturnTo || new URL(request.url).searchParams.get('returnTo');
 
-    if (returnTo) {
-      // SSO Magic Link generation
-      const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
-      const adminClient = createAdminSupabaseClient();
-      const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
-        type: 'magiclink',
-        email: authData.user.email!,
-        options: {
-          redirectTo: returnTo
-        }
-      });
-
-      if (!linkError && linkData?.properties?.action_link) {
-        return apiResponse({
-          user: session.user,
-          token: authData.session?.access_token ?? "",
-          ssoLink: linkData.properties.action_link
-        });
-      }
-    }
+    // (Magic link logic moved to /api/auth/mfa/complete)
 
     return apiResponse({
       user: session.user,
       token: authData.session?.access_token ?? "",
+      mfaRequired: true,
+      mfaEnrolled: mfaEnrolled,
     });
   } catch (err) {
     console.error("[LOGIN] Error:", err);

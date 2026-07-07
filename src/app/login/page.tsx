@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Turnstile } from "@/components/ui/Turnstile";
 import { useAdminLogin } from "@/hooks/useAdminLogin";
-import { Lock, Mail, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { Lock, Mail, Eye, EyeOff, QrCode, KeyRound, ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function LoginPage() {
   const {
@@ -18,6 +18,12 @@ export default function LoginPage() {
     loading,
     error,
     handleSubmit,
+    mfaState,
+    qrCode,
+    verifyCode,
+    setVerifyCode,
+    handleVerifyOTP,
+    cancelMfa,
   } = useAdminLogin();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -80,79 +86,136 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="bg-white lg:bg-transparent lg:shadow-none shadow-xl lg:border-none border border-slate-100 rounded-2xl p-6 lg:p-0">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1">
-                <Input
-                  id="email"
-                  label="Alamat Email"
-                  type="email"
-                  placeholder="admin@kemenag.go.id"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  icon={<Mail className="h-4 w-4 text-slate-400" />}
-                  required
-                  className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                />
-              </div>
+          {mfaState === 'none' && (
+            <div className="bg-white lg:bg-transparent lg:shadow-none shadow-xl lg:border-none border border-slate-100 rounded-2xl p-6 lg:p-0 animate-fade-in-up">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-1">
+                  <Input
+                    id="email"
+                    label="Alamat Email"
+                    type="email"
+                    placeholder="admin@kemenag.go.id"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    icon={<Mail className="h-4 w-4 text-slate-400" />}
+                    required
+                    className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
+                  />
+                </div>
 
-              <div className="space-y-1 relative">
-                <Input
-                  id="password"
-                  label="Kata Sandi"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Masukkan kata sandi"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  icon={<Lock className="h-4 w-4 text-slate-400" />}
-                  required
-                  className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600 transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
+                <div className="space-y-1 relative">
+                  <Input
+                    id="password"
+                    label="Kata Sandi"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Masukkan kata sandi"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    icon={<Lock className="h-4 w-4 text-slate-400" />}
+                    required
+                    className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
 
-              <div className="pt-2">
-                <Turnstile onVerify={setTurnstileToken} />
-              </div>
+                <div className="pt-2 flex justify-center">
+                  <Turnstile onVerify={setTurnstileToken} />
+                </div>
 
-              {error && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 flex items-start">
-                  <div className="flex-shrink-0 mr-3 mt-0.5">
-                    <svg
-                      className="h-4 w-4 text-red-500"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                {error && (
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 flex items-start">
+                    <div className="flex-shrink-0 mr-3 mt-0.5">
+                      <svg className="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>{error}</span>
                   </div>
-                  <span>{error}</span>
+                )}
+
+                <Button
+                  type="submit"
+                  loading={loading}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 py-6 text-base font-medium rounded-xl transition-all hover:-translate-y-0.5 mt-4"
+                >
+                  Masuk ke Dasbor
+                </Button>
+              </form>
+            </div>
+          )}
+
+          {mfaState !== 'none' && (
+            <div className="bg-white lg:bg-transparent lg:shadow-none shadow-xl lg:border-none border border-slate-100 rounded-2xl p-6 lg:p-0 animate-fade-in-up">
+              <div className="mb-6">
+                <button 
+                  onClick={cancelMfa}
+                  className="text-sm text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-4"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Kembali
+                </button>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                  Verifikasi 2-Langkah
+                </h3>
+                <p className="text-sm text-slate-600">
+                  {mfaState === 'enroll' 
+                    ? "Pindai kode QR ini menggunakan aplikasi Google Authenticator, lalu masukkan 6 angka yang muncul." 
+                    : "Masukkan 6 angka dari aplikasi Google Authenticator Anda."}
+                </p>
+              </div>
+
+              {mfaState === 'enroll' && qrCode && (
+                <div className="flex justify-center mb-6 p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+                  <img src={qrCode} alt="QR Code 2FA" className="w-48 h-48" />
                 </div>
               )}
 
-              <Button
-                type="submit"
-                loading={loading}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 py-6 text-base font-medium rounded-xl transition-all hover:-translate-y-0.5 mt-4"
-              >
-                Masuk ke Dasbor
-              </Button>
-            </form>
-          </div>
+              <form onSubmit={handleVerifyOTP} className="space-y-5">
+                <div className="space-y-1">
+                  <Input
+                    id="totp"
+                    label="Kode OTP"
+                    type="text"
+                    placeholder="******"
+                    value={verifyCode}
+                    onChange={(e) => setVerifyCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                    icon={<KeyRound className="h-4 w-4 text-slate-400" />}
+                    required
+                    className="bg-slate-50 border-slate-200 focus:bg-white text-center tracking-[0.75em] font-mono text-2xl py-6 transition-colors"
+                  />
+                </div>
+
+                {error && (
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 flex items-start">
+                    <div className="flex-shrink-0 mr-3 mt-0.5">
+                      <svg className="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  loading={loading}
+                  disabled={verifyCode.length !== 6}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 py-6 text-base font-medium rounded-xl transition-all hover:-translate-y-0.5 mt-4"
+                >
+                  Verifikasi & Masuk
+                </Button>
+              </form>
+            </div>
+          )}
 
           <p className="mt-10 text-center text-sm text-slate-500 font-medium">
             &copy; {new Date().getFullYear()}{" "}
