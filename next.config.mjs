@@ -17,7 +17,7 @@ const nextConfig = {
           },
           {
             key: "X-Frame-Options",
-            value: "ALLOWALL",
+            value: "",
           }
         ],
       },
