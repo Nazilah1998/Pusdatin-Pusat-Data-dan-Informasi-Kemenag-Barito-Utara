@@ -15,11 +15,16 @@ import type { SateliteApp } from "@/types";
 import { cn } from "@/lib/utils";
 import {
   ExternalLink,
-  Edit2,
   Server,
   Database,
   Globe,
   Upload,
+  CheckCircle2,
+  AlertCircle,
+  Settings,
+  MoreVertical,
+  Activity,
+  Edit,
 } from "lucide-react";
 import { useUpdateApp } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
@@ -147,10 +152,10 @@ export function AppGrid({
                   </div>
                   <button
                     onClick={() => setEditingApp(app)}
-                    className="shrink-0 rounded-full bg-slate-50 p-2 text-slate-400 opacity-0 ring-1 ring-slate-200/50 transition-all hover:bg-emerald-50 hover:text-emerald-600 hover:ring-emerald-200 group-hover:opacity-100"
+                    className="shrink-0 rounded-full bg-emerald-50 p-2 text-emerald-600 ring-1 ring-emerald-100 transition-all hover:bg-emerald-100 hover:text-emerald-700 hover:ring-emerald-200"
                     title="Edit Aplikasi"
                   >
-                    <Edit2 className="h-4 w-4" />
+                    <Edit className="h-4 w-4" />
                   </button>
                 </div>
 

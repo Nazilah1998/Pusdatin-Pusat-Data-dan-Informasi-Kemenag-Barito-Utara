@@ -3,7 +3,7 @@
 import { Table } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
 import type { User } from "@/types";
-import { Pencil, Eye } from "lucide-react";
+import { Edit, Eye } from "lucide-react";
 
 interface UserTableProps {
   data: User[];
@@ -88,10 +88,10 @@ export function UserTable({ data, loading, onRowClick }: UserTableProps) {
                   e.stopPropagation();
                   onRowClick?.(user);
                 }}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-colors"
+                className="inline-flex items-center justify-center rounded-lg p-2 bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100 transition-all hover:bg-emerald-100 hover:text-emerald-700 hover:ring-emerald-200"
                 title="Lihat / Edit"
               >
-                <Pencil className="h-4 w-4" />
+                <Edit className="h-4 w-4" />
               </button>
             </div>
           ),

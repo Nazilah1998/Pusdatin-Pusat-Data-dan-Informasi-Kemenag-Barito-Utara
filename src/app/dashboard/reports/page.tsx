@@ -133,7 +133,7 @@ export default function ReportsPage() {
           </CardHeader>
           <CardBody>
             {reportData ? (
-              <div className="h-72 flex items-center justify-center">
+              <div className="relative h-72 w-full flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -142,23 +142,65 @@ export default function ReportsPage() {
                       nameKey="appName"
                       cx="50%"
                       cy="50%"
-                      outerRadius={90}
-                      innerRadius={50}
-                      label={({ appName, percent }) =>
-                        `${appName} ${(percent * 100).toFixed(0)}%`
-                      }
+                      outerRadius={110}
+                      innerRadius={75}
+                      paddingAngle={3}
+                      stroke="none"
+                      labelLine={false}
+                      label={({
+                        cx,
+                        cy,
+                        midAngle,
+                        innerRadius,
+                        outerRadius,
+                        percent,
+                      }) => {
+                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                        const RADIAN = Math.PI / 180;
+                        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                        return percent > 0.05 ? (
+                          <text
+                            x={x}
+                            y={y}
+                            fill="white"
+                            textAnchor="middle"
+                            dominantBaseline="central"
+                            className="text-xs font-bold"
+                          >
+                            {`${(percent * 100).toFixed(0)}%`}
+                          </text>
+                        ) : null;
+                      }}
                     >
                       {reportData.map((_, index) => (
                         <Cell key={index} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "12px",
+                        border: "1px solid #e2e8f0",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                      }}
+                      itemStyle={{ color: "#334155" }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-3xl font-bold text-slate-800">
+                    {reportData.reduce((acc, curr) => acc + curr.count, 0)}
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-500 mt-1 uppercase tracking-wider">
+                    Total Data
+                  </span>
+                </div>
               </div>
             ) : (
-              <div className="flex h-72 items-center justify-center text-sm text-slate-500">
+              <div className="flex h-72 w-full items-center justify-center text-sm text-slate-500">
                 Belum ada data
               </div>
             )}

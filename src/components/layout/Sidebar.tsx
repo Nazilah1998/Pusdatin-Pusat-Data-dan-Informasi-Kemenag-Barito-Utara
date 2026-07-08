@@ -47,7 +47,7 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
             className="h-10 w-10"
           />
           <div>
-            <p className="text-sm font-bold text-slate-900">Pusdatin</p>
+            <p className="text-sm font-bold text-slate-900">PUSDATIN</p>
             <p className="text-xs text-slate-500">Kemenag Barito Utara</p>
           </div>
         </Link>

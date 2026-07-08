@@ -183,7 +183,7 @@ export default async function LandingPage() {
       <footer className="border-t border-slate-100 bg-white">
         <div className="mx-auto w-full px-4 py-8 text-center sm:px-6 lg:px-8">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} PUSDATIN (Pusat Data dan Informasi) | baritoutara.kemenag.go.id
+            &copy; {new Date().getFullYear()} PUSDATIN (Pusat Data dan Informasi) | <a href="https://baritoutara.kemenag.go.id" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">baritoutara.kemenag.go.id</a>
           </p>
         </div>
       </footer>
