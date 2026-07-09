@@ -57,8 +57,8 @@ export default function AppsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Pusat Kendali Aplikasi</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Pusat Kendali Aplikasi</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Kelola status operasional dan pantau kesehatan sistem
           </p>
         </div>
@@ -94,7 +94,7 @@ export default function AppsPage() {
         <Card>
           <CardBody>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                 <Cpu className="h-5 w-5" />
               </div>
               <div className="flex-1">
@@ -117,7 +117,7 @@ export default function AppsPage() {
         <Card>
           <CardBody>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
                 <MemoryStick className="h-5 w-5" />
               </div>
               <div className="flex-1">
@@ -140,7 +140,7 @@ export default function AppsPage() {
         <Card>
           <CardBody>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                 <HardDrive className="h-5 w-5" />
               </div>
               <div className="flex-1">
@@ -164,7 +164,7 @@ export default function AppsPage() {
 
       <Card>
         <CardHeader>
-          <h3 className="font-semibold text-slate-900">Status Aplikasi Satelit</h3>
+          <h3 className="font-semibold text-slate-900 dark:text-white">Status Aplikasi Satelit</h3>
         </CardHeader>
         <CardBody>
           <AppGrid

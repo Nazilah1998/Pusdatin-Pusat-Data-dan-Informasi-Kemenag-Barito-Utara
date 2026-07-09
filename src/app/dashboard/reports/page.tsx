@@ -29,8 +29,8 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Laporan & Analitik</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Laporan & Analitik</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Data agregasi laporan dari seluruh aplikasi satelit
         </p>
       </div>
@@ -40,7 +40,7 @@ export default function ReportsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-emerald-600" />
-              <h3 className="font-semibold text-slate-900">Distribusi per Aplikasi</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white">Distribusi per Aplikasi</h3>
             </div>
           </CardHeader>
           <CardBody>
@@ -50,7 +50,7 @@ export default function ReportsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={reportData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-slate-100 dark:stroke-slate-800" />
                     <XAxis
                       dataKey="appName"
                       tick={{ fontSize: 12, fill: "#94a3b8" }}
@@ -83,7 +83,7 @@ export default function ReportsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Activity className="h-4 w-4 text-emerald-600" />
-              <h3 className="font-semibold text-slate-900">Aktivitas (14 Hari)</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white">Aktivitas (14 Hari)</h3>
             </div>
           </CardHeader>
           <CardBody>
@@ -91,7 +91,7 @@ export default function ReportsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={activity}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-slate-100 dark:stroke-slate-800" />
                     <XAxis
                       dataKey="date"
                       tick={{ fontSize: 12, fill: "#94a3b8" }}
@@ -128,7 +128,7 @@ export default function ReportsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-emerald-600" />
-              <h3 className="font-semibold text-slate-900">Komposisi Data</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white">Komposisi Data</h3>
             </div>
           </CardHeader>
           <CardBody>
@@ -191,10 +191,10 @@ export default function ReportsPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-3xl font-bold text-slate-800">
+                  <span className="text-3xl font-bold text-slate-800 dark:text-slate-200">
                     {reportData.reduce((acc, curr) => acc + curr.count, 0)}
                   </span>
-                  <span className="text-[10px] font-semibold text-slate-500 mt-1 uppercase tracking-wider">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider">
                     Total Data
                   </span>
                 </div>
@@ -211,7 +211,7 @@ export default function ReportsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-emerald-600" />
-              <h3 className="font-semibold text-slate-900">Ringkasan</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white">Ringkasan</h3>
             </div>
           </CardHeader>
           <CardBody>
@@ -220,25 +220,25 @@ export default function ReportsPage() {
                 {reportData.map((item, i) => (
                   <div
                     key={item.appName}
-                    className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"
+                    className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-900/50 px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className="h-3 w-3 rounded-full"
                         style={{ backgroundColor: COLORS[i % COLORS.length] }}
                       />
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                         {item.appName}
                       </span>
                     </div>
-                    <span className="text-sm font-semibold text-slate-900">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
                       {item.count}
                     </span>
                   </div>
                 ))}
-                <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3">
-                  <span className="text-sm font-semibold text-emerald-700">Total</span>
-                  <span className="text-sm font-bold text-emerald-700">
+                <div className="flex items-center justify-between rounded-lg bg-emerald-50 dark:bg-emerald-900/30 px-4 py-3">
+                  <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Total</span>
+                  <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
                     {reportData.reduce((acc, curr) => acc + curr.count, 0)}
                   </span>
                 </div>

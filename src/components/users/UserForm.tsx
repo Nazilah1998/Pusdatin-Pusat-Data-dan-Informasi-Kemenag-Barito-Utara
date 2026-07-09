@@ -145,10 +145,10 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
 
       {userType === "internal_admin" && (
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
             Hak Akses per Aplikasi (RBAC) & Fitur
           </label>
-          <div className="space-y-3 rounded-lg border border-slate-200 p-4 max-h-[400px] overflow-y-auto">
+          <div className="space-y-3 rounded-lg border border-slate-200 dark:border-slate-800 p-4 max-h-[400px] overflow-y-auto">
             {appPermissions.map((perm) => {
               const currentApp = apps?.find(a => a.id === perm.appId);
               const availableFeatures = currentApp?.availableFeatures || [];
@@ -156,10 +156,10 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
               return (
                 <div
                   key={perm.appId}
-                  className="flex flex-col gap-3 rounded-md bg-slate-50 px-3 py-3 border border-slate-100"
+                  className="flex flex-col gap-3 rounded-md bg-slate-50 dark:bg-slate-900/50 px-3 py-3 border border-slate-100 dark:border-slate-800"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-slate-700">
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       {perm.appName}
                     </span>
                     <div className="flex items-center gap-1">
@@ -170,8 +170,8 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
                           onClick={() => handleAppRoleChange(perm.appId, r)}
                           className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
                             perm.role === r
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "text-slate-500 hover:bg-slate-200"
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+                              : "text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                           }`}
                         >
                           {r === "none" ? "Tidak" : r === "viewer" ? "Viewer" : "Operator"}
@@ -190,9 +190,9 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
                             id={`${perm.appId}-${feat.id}`}
                             checked={Array.isArray(perm.features) ? perm.features.includes(feat.id) : false}
                             onChange={(e) => handleFeatureToggle(perm.appId, feat.id, e.target.checked)}
-                            className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                            className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500 dark:bg-slate-800"
                           />
-                          <label htmlFor={`${perm.appId}-${feat.id}`} className="text-xs text-slate-600 cursor-pointer">
+                          <label htmlFor={`${perm.appId}-${feat.id}`} className="text-xs text-slate-600 dark:text-slate-300 cursor-pointer">
                             {feat.label}
                           </label>
                         </div>

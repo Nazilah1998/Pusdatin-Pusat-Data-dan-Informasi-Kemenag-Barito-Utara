@@ -17,6 +17,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     checkSession();
   }, []);
 
+
   const handleLogout = async () => {
     await logout();
     router.push("/");
@@ -24,9 +25,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 lg:flex">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 lg:flex">
       <aside className="hidden lg:block lg:w-64 lg:shrink-0">
-        <div className="sticky top-0 h-screen border-r border-slate-200 bg-white">
+        <div className="sticky top-0 h-screen border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           <Sidebar onLogout={handleLogout} />
         </div>
       </aside>
@@ -37,7 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setSidebarOpen(false)}
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           />
-          <div className="relative flex h-full w-[280px] flex-col border-r border-slate-200 bg-white shadow-2xl">
+          <div className="relative flex h-full w-[280px] flex-col border-r border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             <Sidebar onClose={() => setSidebarOpen(false)} onLogout={handleLogout} />
           </div>
         </div>

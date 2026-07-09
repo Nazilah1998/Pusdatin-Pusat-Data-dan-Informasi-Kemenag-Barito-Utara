@@ -18,10 +18,10 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary:
     "bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-sm",
   secondary:
-    "bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300",
+    "bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:active:bg-slate-600",
   outline:
-    "border border-slate-300 text-slate-700 hover:bg-slate-50 active:bg-slate-100",
-  ghost: "text-slate-700 hover:bg-slate-100 active:bg-slate-200",
+    "border border-slate-300 text-slate-700 hover:bg-slate-50 active:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700",
+  ghost: "text-slate-700 hover:bg-slate-100 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700",
   danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm",
 };
 

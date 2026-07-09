@@ -59,8 +59,8 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{title}</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {currentApp ? `Kelola hak akses khusus untuk ${currentApp.name}` : `Kelola data ${title}`}
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function UsersPage() {
       {userType === "internal_admin" ? (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex space-x-1 rounded-lg bg-slate-100 p-1">
+            <div className="flex space-x-1 rounded-lg bg-slate-100 dark:bg-slate-900/50 p-1">
               {(["super_admin", "admin", "sub_admin"] as const).map((tab) => (
                 <button
                   key={tab}
@@ -84,8 +84,8 @@ export default function UsersPage() {
                   }}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                     activeTab === tab
-                      ? "bg-white text-emerald-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                      ? "bg-white text-emerald-600 shadow-sm dark:bg-slate-800 dark:text-emerald-400"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800"
                   }`}
                 >
                   {tab === "super_admin"
@@ -103,7 +103,7 @@ export default function UsersPage() {
                 placeholder="Cari pengguna..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
+                className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
               />
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function UsersPage() {
                 placeholder="Cari pengguna..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
+                className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
               />
             </div>
           </CardHeader>

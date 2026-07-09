@@ -26,7 +26,7 @@ export function AuditTable({ data, loading, onRowClick }: AuditTableProps) {
           header: "Waktu",
           sortable: true,
           render: (log) => (
-            <span className="text-slate-600 text-xs">
+            <span className="text-slate-600 dark:text-slate-400 text-xs">
               {formatRelativeDate(log.timestamp)}
             </span>
           ),
@@ -44,8 +44,8 @@ export function AuditTable({ data, loading, onRowClick }: AuditTableProps) {
           sortable: true,
           render: (log) => (
             <div>
-              <p className="font-medium text-slate-700">{log.target}</p>
-              <p className="text-xs text-slate-400">{log.targetSchema}</p>
+              <p className="font-medium text-slate-700 dark:text-slate-300">{log.target}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{log.targetSchema}</p>
             </div>
           ),
         },
@@ -58,7 +58,7 @@ export function AuditTable({ data, loading, onRowClick }: AuditTableProps) {
           key: "id",
           header: "Detail",
           render: () => (
-            <span className="text-emerald-600 text-xs font-medium hover:underline cursor-pointer">
+            <span className="text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:underline cursor-pointer">
               Lihat detail
             </span>
           ),

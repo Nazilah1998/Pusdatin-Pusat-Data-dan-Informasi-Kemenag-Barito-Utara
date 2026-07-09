@@ -37,9 +37,9 @@ const icons = {
 };
 
 const styles: Record<ToastType, string> = {
-  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  error: "border-red-200 bg-red-50 text-red-800",
-  warning: "border-amber-200 bg-amber-50 text-amber-800",
+  success: "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-500/10 dark:text-emerald-400",
+  error: "border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-500/10 dark:text-red-400",
+  warning: "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/50 dark:bg-amber-500/10 dark:text-amber-400",
 };
 
 export function ToastContainer() {

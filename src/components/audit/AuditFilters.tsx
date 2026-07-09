@@ -32,7 +32,7 @@ export function AuditFilters({
           placeholder="Cari target..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
+          className="h-10 w-full rounded-lg border border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
         />
       </div>
       <Select

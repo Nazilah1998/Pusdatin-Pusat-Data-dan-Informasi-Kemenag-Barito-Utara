@@ -9,9 +9,9 @@ const globalForDb = globalThis as unknown as {
 
 const pool = globalForDb.postgresPool ?? new pg.Pool({
   connectionString: env.databaseUrl,
-  max: 30,
+  max: 15,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 30000,
 });
 
 if (process.env.NODE_ENV !== "production") {

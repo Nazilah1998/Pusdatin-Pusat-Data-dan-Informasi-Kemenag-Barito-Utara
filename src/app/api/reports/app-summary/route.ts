@@ -15,20 +15,22 @@ export async function GET(_request: NextRequest) {
     const apps = await db.select().from(satelliteApps);
     const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
 
-    const result = await Promise.all(
-      apps.map(async (app, i) => {
-        const [countResult] = await db
-          .select({ count: sql<number>`count(*)` })
-          .from(auditLogs)
-          .where(eq(auditLogs.targetSchema, app.schemaName));
+    const logCounts = await db
+      .select({
+        schema: auditLogs.targetSchema,
+        count: sql<number>`count(*)`,
+      })
+      .from(auditLogs)
+      .groupBy(auditLogs.targetSchema);
 
-        return {
-          appName: app.name,
-          count: Number(countResult?.count || 0),
-          color: colors[i % colors.length],
-        };
-      }),
-    );
+    const result = apps.map((app, i) => {
+      const match = logCounts.find((lc) => lc.schema === app.schemaName);
+      return {
+        appName: app.name,
+        count: Number(match?.count || 0),
+        color: colors[i % colors.length],
+      };
+    });
 
     return apiResponse(result);
   } catch (err) {

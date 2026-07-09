@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import type { AuditLog } from "@/types";
 
@@ -27,6 +27,23 @@ export function useAuditLogs(filters?: AuditFilters) {
       if (filters?.search) params.search = filters.search;
       if (filters?.targetSchema) params.targetSchema = filters.targetSchema;
       return api.get("/audit-logs", { params });
+    },
+  });
+}
+
+export function useDeleteAuditLogs() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (targetSchema?: string) => {
+      const params: Record<string, string> = {};
+      if (targetSchema) {
+        params.targetSchema = targetSchema;
+      }
+      return api.delete("/audit-logs", { params });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
     },
   });
 }

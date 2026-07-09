@@ -99,7 +99,7 @@ export default function UserDetailPage() {
             <ArrowLeft className="h-5 w-5 text-slate-500" />
           </Button>
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 border border-slate-200 shadow-sm">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
               <img
                 src="/branding/kemenag.svg"
                 alt="Kemenag"
@@ -107,8 +107,8 @@ export default function UserDetailPage() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{user.name}</h1>
-              <p className="text-sm text-slate-500">{user.email}</p>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{user.name}</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
             </div>
           </div>
         </div>
@@ -128,20 +128,20 @@ export default function UserDetailPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="shadow-sm border-slate-200/60">
-          <CardHeader className="border-b border-slate-100 bg-slate-50/50">
-            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+        <Card className="shadow-sm border-slate-200/60 dark:border-slate-800/60">
+          <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+            <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
               <UserIcon className="h-5 w-5 text-emerald-600" />
               Informasi Akun
             </h3>
           </CardHeader>
           <CardBody className="space-y-5">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-50 rounded-lg">
+              <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg">
                 <Briefcase className="h-4 w-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Tipe Pengguna</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Tipe Pengguna</p>
                 <Badge variant="info">
                   {user.userType === "internal_admin"
                     ? "Admin Internal"
@@ -156,11 +156,11 @@ export default function UserDetailPage() {
 
             {user.userType === "internal_admin" && (
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-50 rounded-lg">
+                <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
                   <Shield className="h-4 w-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Role Global</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Role Global</p>
                   <Badge
                     variant={
                       user.role === "super_admin"
@@ -181,11 +181,11 @@ export default function UserDetailPage() {
             )}
 
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-50 rounded-lg">
+              <div className="p-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
                 <Activity className="h-4 w-4 text-amber-600" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Status Akun</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Status Akun</p>
                 <Badge variant={user.status === "active" ? "success" : "default"}>
                   {user.status === "active" ? "Aktif" : "Nonaktif"}
                 </Badge>
@@ -193,12 +193,12 @@ export default function UserDetailPage() {
             </div>
             
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-slate-100 rounded-lg">
+              <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <Calendar className="h-4 w-4 text-slate-600" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Bergabung Sejak</p>
-                <p className="text-sm font-medium text-slate-700">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Bergabung Sejak</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   {new Date(user.createdAt).toLocaleDateString("id-ID", {
                     day: "numeric",
                     month: "long",
@@ -211,17 +211,17 @@ export default function UserDetailPage() {
         </Card>
 
         <div className="lg:col-span-2">
-          <Card className="shadow-sm border-slate-200/60 h-full">
-            <CardHeader className="border-b border-slate-100 bg-slate-50/50">
-              <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+          <Card className="shadow-sm border-slate-200/60 dark:border-slate-800/60 h-full">
+            <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+              <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <Shield className="h-5 w-5 text-emerald-600" />
                 Hak Akses Aplikasi & Fitur (RBAC)
               </h3>
             </CardHeader>
             <CardBody>
               {user.appPermissions.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-slate-500 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                  <MonitorSmartphone className="h-10 w-10 text-slate-300 mb-3" />
+                <div className="flex flex-col items-center justify-center py-12 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                  <MonitorSmartphone className="h-10 w-10 text-slate-300 dark:text-slate-600 mb-3" />
                   <p className="text-sm font-medium">Belum ada hak akses aplikasi yang diberikan.</p>
                 </div>
               ) : (
@@ -233,12 +233,12 @@ export default function UserDetailPage() {
                     return (
                       <div
                         key={perm.appId}
-                        className="flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+                        className="flex flex-col rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm overflow-hidden"
                       >
-                        <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100">
+                        <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800">
                           <div className="flex items-center gap-2">
                             <MonitorSmartphone className="h-4 w-4 text-emerald-600" />
-                            <span className="text-sm font-bold text-slate-800">
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
                               {perm.appName}
                             </span>
                           </div>
@@ -259,16 +259,16 @@ export default function UserDetailPage() {
                           </Badge>
                         </div>
                         
-                        <div className="p-4 bg-white flex-1">
+                        <div className="p-4 bg-white dark:bg-slate-950 flex-1">
                           <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-3">Fitur Terbuka</p>
                           {(!perm.features || perm.features.length === 0) ? (
-                            <p className="text-xs text-slate-500 italic">Tidak ada fitur spesifik.</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 italic">Tidak ada fitur spesifik.</p>
                           ) : (
                             <ul className="space-y-2">
                               {(Array.isArray(perm.features) ? perm.features : []).map(featId => {
                                 const featLabel = availableFeatures.find(f => f.id === featId)?.label || featId;
                                 return (
-                                  <li key={featId} className="flex items-start gap-2 text-sm text-slate-700">
+                                  <li key={featId} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
                                     <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                                     <span>{featLabel}</span>
                                   </li>

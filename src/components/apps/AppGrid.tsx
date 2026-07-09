@@ -142,10 +142,10 @@ export function AppGrid({
                       )}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="truncate text-base font-bold tracking-tight text-slate-900 transition-colors group-hover:text-emerald-700">
+                      <h3 className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
                         {app.name}
                       </h3>
-                      <p className="line-clamp-1 text-xs font-medium text-slate-500">
+                      <p className="line-clamp-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                         {app.description}
                       </p>
                     </div>
@@ -159,15 +159,15 @@ export function AppGrid({
                   </button>
                 </div>
 
-                <div className="mt-5 mb-5 grid grid-cols-2 gap-2 sm:gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-2 sm:p-3 text-[10px] sm:text-[11px] text-slate-600">
+                <div className="mt-5 mb-5 grid grid-cols-2 gap-2 sm:gap-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-2 sm:p-3 text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400">
                   <div className="flex flex-col gap-1.5 overflow-hidden">
-                    <div className="flex items-center gap-1.5 font-semibold text-slate-500">
+                    <div className="flex items-center gap-1.5 font-semibold text-slate-500 dark:text-slate-400">
                       <Database className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">Schema DB</span>
                     </div>
                     <div className="flex items-center gap-1.5 w-full">
                       <span
-                        className="flex-1 min-w-0 truncate font-medium text-slate-700 bg-white px-2 py-1 rounded-md border border-slate-100"
+                        className="flex-1 min-w-0 truncate font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 px-2 py-1 rounded-md border border-slate-100 dark:border-slate-800"
                         title={app.schemaName || app.schema}
                       >
                         {app.schemaName || app.schema}
@@ -186,13 +186,13 @@ export function AppGrid({
                     </div>
                   </div>
                   <div className="flex flex-col gap-1.5 overflow-hidden">
-                    <div className="flex items-center gap-1.5 font-semibold text-slate-500">
+                    <div className="flex items-center gap-1.5 font-semibold text-slate-500 dark:text-slate-400">
                       <Globe className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">URL Website</span>
                     </div>
                     <div className="flex items-center gap-1.5 w-full">
                       <span
-                        className="flex-1 min-w-0 truncate font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100/50"
+                        className="flex-1 min-w-0 truncate font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded-md border border-emerald-100/50 dark:border-emerald-900/50"
                         title={app.url || ""}
                       >
                         {app.url ? new URL(app.url).hostname : "Belum diatur"}
@@ -212,7 +212,7 @@ export function AppGrid({
                   </div>
                 </div>
 
-                <div className="mt-auto flex flex-wrap items-center justify-between border-t border-slate-100 pt-4 gap-3">
+                <div className="mt-auto flex flex-wrap items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 gap-3">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                       <div
@@ -227,8 +227,8 @@ export function AppGrid({
                         className={cn(
                           "text-xs font-bold",
                           app.status === "online"
-                            ? "text-emerald-700"
-                            : "text-amber-700",
+                            ? "text-emerald-700 dark:text-emerald-400"
+                            : "text-amber-700 dark:text-amber-400",
                         )}
                       >
                         {app.status === "online"
@@ -250,7 +250,7 @@ export function AppGrid({
 
                   <Dropdown
                     trigger={
-                      <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 hover:text-emerald-800">
+                      <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:text-emerald-800 dark:hover:text-emerald-300">
                         Buka di local
                         <Server className="h-3.5 w-3.5" />
                       </button>
@@ -387,7 +387,7 @@ function EditAppModal({
         <div className="flex gap-4 items-start">
           <div className="flex-1 space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
                 Nama Aplikasi
               </label>
               <Input
@@ -399,11 +399,11 @@ function EditAppModal({
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
                 Deskripsi Singkat
               </label>
               <textarea
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:border-emerald-500 dark:focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 rows={2}
                 value={formData.description}
                 onChange={(e) =>
@@ -414,7 +414,7 @@ function EditAppModal({
           </div>
 
           <div className="flex flex-col items-center gap-2 pt-6">
-            <div className="h-20 w-20 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden relative group">
+            <div className="h-20 w-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center overflow-hidden relative group">
               {formData.icon ? (
                 <img
                   src={formData.icon}
@@ -440,7 +440,7 @@ function EditAppModal({
                 </Button>
               </div>
             </div>
-            <span className="text-[10px] text-slate-500 max-w-[100px] text-center">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 max-w-[100px] text-center">
               JPG/PNG/SVG
               <br />
               Max 2MB
@@ -458,9 +458,9 @@ function EditAppModal({
                       iconScale: parseInt(e.target.value),
                     })
                   }
-                  className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
                 />
-                <div className="text-center text-[10px] text-slate-500 mt-1">
+                <div className="text-center text-[10px] text-slate-500 dark:text-slate-400 mt-1">
                   Ukuran: {formData.iconScale}%
                 </div>
               </div>
@@ -476,7 +476,7 @@ function EditAppModal({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
+          <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
             URL Default (Online)
           </label>
           <Input
@@ -487,7 +487,7 @@ function EditAppModal({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
               Schema DB
             </label>
             <Input
@@ -499,7 +499,7 @@ function EditAppModal({
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
               URL Schema DB (Opsional)
             </label>
             <Input
@@ -512,7 +512,7 @@ function EditAppModal({
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
               Sort Order
             </label>
             <Input

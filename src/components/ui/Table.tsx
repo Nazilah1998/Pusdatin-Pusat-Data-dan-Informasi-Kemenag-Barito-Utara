@@ -51,16 +51,16 @@ export function Table<T>({
   });
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200">
-      <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+      <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+        <thead className="bg-slate-50 dark:bg-slate-900/50">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
                 className={cn(
-                  "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500",
-                  col.sortable && "cursor-pointer select-none hover:text-slate-700",
+                  "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400",
+                  col.sortable && "cursor-pointer select-none hover:text-slate-700 dark:hover:text-slate-200",
                   col.className,
                 )}
                 onClick={() => col.sortable && handleSort(col.key)}
@@ -81,13 +81,13 @@ export function Table<T>({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 bg-white">
+        <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
               <tr key={i}>
                 {columns.map((col) => (
                   <td key={col.key} className="px-4 py-3">
-                    <div className="h-4 w-full animate-pulse rounded bg-slate-200" />
+                    <div className="h-4 w-full animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
                   </td>
                 ))}
               </tr>
@@ -96,7 +96,7 @@ export function Table<T>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-12 text-center text-sm text-slate-500"
+                className="px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400"
               >
                 {emptyMessage}
               </td>
@@ -106,13 +106,13 @@ export function Table<T>({
               <tr
                 key={keyExtractor(item)}
                 className={cn(
-                  "transition-colors hover:bg-slate-50",
+                  "transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50",
                   onRowClick && "cursor-pointer",
                 )}
                 onClick={() => onRowClick?.(item)}
               >
                 {columns.map((col) => (
-                  <td key={col.key} className={cn("px-4 py-3 text-sm text-slate-700", col.className)}>
+                  <td key={col.key} className={cn("px-4 py-3 text-sm text-slate-700 dark:text-slate-300", col.className)}>
                     {col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? "")}
                   </td>
                 ))}

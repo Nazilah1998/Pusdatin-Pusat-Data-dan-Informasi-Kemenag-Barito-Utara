@@ -62,3 +62,26 @@ export async function GET(request: NextRequest) {
     return apiResponse({ message: "Internal server error" }, 500);
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getCurrentSessionContext();
+    if (!session.isAdmin) {
+      return apiResponse({ message: "Unauthorized" }, 401);
+    }
+
+    const { searchParams } = new URL(request.url);
+    const targetSchema = searchParams.get("targetSchema");
+
+    if (targetSchema) {
+      await db.delete(auditLogs).where(eq(auditLogs.targetSchema, targetSchema));
+    } else {
+      await db.delete(auditLogs);
+    }
+
+    return apiResponse({ message: "Audit logs deleted successfully" });
+  } catch (err) {
+    console.error("[AUDIT] DELETE error:", err);
+    return apiResponse({ message: "Internal server error" }, 500);
+  }
+}

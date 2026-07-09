@@ -30,31 +30,37 @@ export async function getCurrentSessionContext(serverUser?: User | null): Promis
       return { user: null, isAuthenticated: false, isAdmin: false };
     }
 
-    const [profile] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, user.email ?? ""))
-      .limit(1);
-
     const isCentralSuperAdmin =
       user.app_metadata?.role === "super_admin" ||
-      user.user_metadata?.role === "super_admin";
+      user.user_metadata?.role === "super_admin" ||
+      user.email === env.superAdminEmail;
 
-    const role = isCentralSuperAdmin
-      ? "super_admin"
-      : user.email === env.superAdminEmail
-      ? "super_admin"
-      : profile?.role || "viewer";
+    let role = "viewer";
+    let profile = null;
+    let perms: any[] = [];
 
-    const perms = await db
-      .select({
-        appId: appPermissions.appId,
-        role: appPermissions.role,
-        appName: satelliteApps.name,
-      })
-      .from(appPermissions)
-      .leftJoin(satelliteApps, eq(appPermissions.appId, satelliteApps.id))
-      .where(eq(appPermissions.userId, user.id));
+    if (isCentralSuperAdmin) {
+      role = "super_admin";
+    } else {
+      const [p] = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.email, user.email ?? ""))
+        .limit(1);
+      
+      profile = p;
+      role = profile?.role || "viewer";
+
+      perms = await db
+        .select({
+          appId: appPermissions.appId,
+          role: appPermissions.role,
+          appName: satelliteApps.name,
+        })
+        .from(appPermissions)
+        .leftJoin(satelliteApps, eq(appPermissions.appId, satelliteApps.id))
+        .where(eq(appPermissions.userId, user.id));
+    }
 
     const userData = {
       id: user.id,
