@@ -19,6 +19,7 @@ export function useAdminLogin() {
   const [qrCode, setQrCode] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
   
+  const [trustDevice, setTrustDevice] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -77,7 +78,7 @@ export function useAdminLogin() {
           return;
         }
 
-        router.push("/dashboard");
+      router.push("/dashboard/apps");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan");
       } finally {
@@ -134,7 +135,7 @@ export function useAdminLogin() {
       const res = await fetch("/api/auth/mfa/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ returnTo }),
+        body: JSON.stringify({ returnTo, trustDevice }),
       });
       
       const data = await res.json();
@@ -147,13 +148,13 @@ export function useAdminLogin() {
         return;
       }
       
-      router.push("/dashboard");
+      router.push("/dashboard/apps");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat memverifikasi OTP");
     } finally {
       setLoading(false);
     }
-  }, [verifyCode, mfaFactorId, mfaState, router, supabase]);
+  }, [verifyCode, mfaFactorId, mfaState, router, supabase, trustDevice]);
 
   const cancelMfa = () => {
     supabase.auth.signOut();
@@ -176,6 +177,8 @@ export function useAdminLogin() {
     qrCode,
     verifyCode,
     setVerifyCode,
+    trustDevice,
+    setTrustDevice,
     handleVerifyOTP,
     cancelMfa,
   };

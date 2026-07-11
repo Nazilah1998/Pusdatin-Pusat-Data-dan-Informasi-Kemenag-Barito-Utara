@@ -7,14 +7,23 @@ const globalForDb = globalThis as unknown as {
   postgresPool: pg.Pool | undefined;
 };
 
-const pool = globalForDb.postgresPool ?? new pg.Pool({
-  connectionString: env.databaseUrl,
-  max: 15,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 30000,
-});
+const isProd = process.env.NODE_ENV === "production";
 
-if (process.env.NODE_ENV !== "production") {
+function createPool() {
+  return new pg.Pool({
+    connectionString: env.databaseUrl,
+    max: isProd ? 10 : 3,
+    idleTimeoutMillis: isProd ? 30000 : 5000,
+    connectionTimeoutMillis: 15000, // VPS remote butuh waktu lebih lama
+    allowExitOnIdle: !isProd,
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000,
+  });
+}
+
+const pool = globalForDb.postgresPool ?? createPool();
+
+if (!isProd) {
   globalForDb.postgresPool = pool;
 }
 

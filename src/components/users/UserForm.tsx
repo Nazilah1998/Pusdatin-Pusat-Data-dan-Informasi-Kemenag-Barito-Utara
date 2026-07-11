@@ -39,6 +39,10 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
   const [status, setStatus] = useState<"active" | "inactive">(
     initialData?.status || "active",
   );
+  const fallbackNip = (initialData?.email && initialData.email.includes("@")) ? initialData.email.split("@")[0] : "";
+  const [nip, setNip] = useState(initialData?.nip || fallbackNip);
+  const [jabatan, setJabatan] = useState(initialData?.jabatan || "");
+  const [unitKerja, setUnitKerja] = useState(initialData?.unitKerja || "");
   
   const { data: apps } = useApps();
   const [appPermissions, setAppPermissions] = useState<AppPermission[]>(
@@ -79,14 +83,24 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Auto-assign global role based on userType so it's strictly scoped
+    let finalRole = role;
+    if (userType === "internal_pegawai") {
+      finalRole = "pegawai";
+    } else if (userType === "eksternal_masyarakat") {
+      finalRole = "user";
+    }
+
     onSubmit({
       name,
       email,
       ...(password ? { password } : {}),
-      role,
+      role: finalRole,
       userType,
       status,
-      appPermissions: appPermissions.filter((p) => p.role !== "none"),
+      ...(userType === "internal_pegawai" ? { nip, jabatan, unitKerja } : {}),
+      appPermissions: userType === "internal_admin" ? appPermissions.filter((p) => p.role !== "none") : [],
     });
   };
 
@@ -134,6 +148,31 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
           />
         )}
       </div>
+
+      {userType === "internal_pegawai" && (
+        <div className="grid gap-4 sm:grid-cols-2 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+          <Input
+            id="nip"
+            label="NIP"
+            value={nip}
+            onChange={(e) => setNip(e.target.value)}
+          />
+          <Input
+            id="jabatan"
+            label="Jabatan"
+            value={jabatan}
+            onChange={(e) => setJabatan(e.target.value)}
+          />
+          <div className="sm:col-span-2">
+            <Input
+              id="unitKerja"
+              label="Unit Kerja"
+              value={unitKerja}
+              onChange={(e) => setUnitKerja(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-2">
         <Toggle

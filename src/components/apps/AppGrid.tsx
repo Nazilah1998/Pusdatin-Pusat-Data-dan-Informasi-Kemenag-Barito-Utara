@@ -213,39 +213,45 @@ export function AppGrid({
                 </div>
 
                 <div className="mt-auto flex flex-wrap items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={cn(
-                          "h-2 w-2 rounded-full",
-                          app.status === "online"
-                            ? "bg-emerald-500 animate-pulse"
-                            : "bg-amber-500",
-                        )}
-                      />
-                      <span
-                        className={cn(
-                          "text-xs font-bold",
-                          app.status === "online"
-                            ? "text-emerald-700 dark:text-emerald-400"
-                            : "text-amber-700 dark:text-amber-400",
-                        )}
-                      >
-                        {app.status === "online"
-                          ? "Mode Online"
-                          : "Maintenance"}
-                      </span>
-                    </div>
-                    <Toggle
-                      checked={app.status === "online"}
-                      onChange={(checked) =>
-                        setConfirmToggle({
-                          id: app.id,
-                          status: checked ? "online" : "maintenance",
-                          appName: app.name,
-                        })
-                      }
+                  <div className="relative flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg w-[240px]">
+                    <div 
+                      className={cn(
+                        "absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-md shadow-sm transition-all duration-300 ease-out", 
+                        app.status === 'online' 
+                          ? "left-1 bg-white dark:bg-slate-700" 
+                          : "left-[calc(50%+2px)] bg-white dark:bg-slate-700"
+                      )} 
                     />
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        if (app.status !== 'online') {
+                          setConfirmToggle({ id: app.id, status: 'online', appName: app.name });
+                        }
+                      }}
+                      className={cn(
+                        "relative z-10 flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[11px] uppercase tracking-wider font-bold transition-colors rounded-md", 
+                        app.status === 'online' ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                      )}
+                    >
+                      <div className={cn("h-1.5 w-1.5 rounded-full", app.status === 'online' ? "bg-emerald-500 animate-pulse" : "bg-transparent")} />
+                      Online
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        if (app.status !== 'maintenance') {
+                          setConfirmToggle({ id: app.id, status: 'maintenance', appName: app.name });
+                        }
+                      }}
+                      className={cn(
+                        "relative z-10 flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[11px] uppercase tracking-wider font-bold transition-colors rounded-md", 
+                        app.status === 'maintenance' ? "text-amber-600 dark:text-amber-400" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                      )}
+                    >
+                      <div className={cn("h-1.5 w-1.5 rounded-full", app.status === 'maintenance' ? "bg-amber-500" : "bg-transparent")} />
+                      Maintenance
+                    </button>
                   </div>
 
                   <Dropdown

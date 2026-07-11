@@ -16,8 +16,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     checkSession();
   }, []);
-
-
+  
   const handleLogout = async () => {
     await logout();
     router.push("/");

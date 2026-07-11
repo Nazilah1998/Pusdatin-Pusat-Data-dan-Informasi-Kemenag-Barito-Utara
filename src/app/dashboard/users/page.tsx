@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { Dialog } from "@/components/ui/Dialog";
 import { UserTable } from "@/components/users/UserTable";
 import { UserForm } from "@/components/users/UserForm";
-import { useUsers, useCreateUser } from "@/hooks/use-users";
+import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from "@/hooks/use-users";
 import { useApps } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
 import type { User } from "@/types";
@@ -18,14 +18,20 @@ export default function UsersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const appId = searchParams.get("appId") || undefined;
-  const userType = searchParams.get("type") || "internal_admin";
+  const userType = (searchParams.get("type") as string) || "internal_admin";
   const { data: users, isLoading } = useUsers({ appId, userType });
   const { data: apps } = useApps();
   const createUser = useCreateUser();
-  const [showCreate, setShowCreate] = useState(false);
+  const updateUser = useUpdateUser();
+  const deleteUser = useDeleteUser();
+  const [showForm, setShowForm] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [deletingUser, setDeletingUser] = useState<User | null>(null);
   const [search, setSearch] = useState("");
   const tabParam = searchParams.get("tab") as "super_admin" | "admin" | "sub_admin";
   const [activeTab, setActiveTab] = useState<"super_admin" | "admin" | "sub_admin">(tabParam || "super_admin");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const filtered = users?.filter(
     (u) =>
@@ -33,13 +39,39 @@ export default function UsersPage() {
       u.email.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const handleCreate = async (data: Partial<User>) => {
+  const handleSubmit = async (data: Partial<User>) => {
     try {
-      await createUser.mutateAsync(data);
-      toast("success", "Pengguna berhasil ditambahkan");
-      setShowCreate(false);
+      if (editingUser) {
+        await updateUser.mutateAsync({ id: editingUser.id, data });
+        toast("success", "Pengguna berhasil diperbarui");
+      } else {
+        await createUser.mutateAsync(data);
+        toast("success", "Pengguna berhasil ditambahkan");
+      }
+      setShowForm(false);
     } catch {
-      toast("error", "Gagal menambahkan pengguna");
+      toast("error", `Gagal ${editingUser ? "memperbarui" : "menambahkan"} pengguna`);
+    }
+  };
+
+  const handleEdit = (user: User) => {
+    setEditingUser(user);
+    setShowForm(true);
+  };
+
+  const handleDelete = (user: User) => {
+    setDeletingUser(user);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingUser) return;
+    try {
+      await deleteUser.mutateAsync(deletingUser.id);
+      toast("success", "Pengguna berhasil dihapus");
+    } catch {
+      toast("error", "Gagal menghapus pengguna");
+    } finally {
+      setDeletingUser(null);
     }
   };
 
@@ -55,6 +87,68 @@ export default function UsersPage() {
       title = "Masyarakat Umum";
     }
 
+  const renderPagination = (totalItems: number) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (totalPages <= 1) return null;
+
+    const renderPageNumbers = () => {
+      const pages = [];
+      const maxVisiblePages = 5;
+      
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = startPage + maxVisiblePages - 1;
+
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(
+          <Button
+            key={i}
+            variant={currentPage === i ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setCurrentPage(i)}
+            className={`w-8 h-8 p-0 flex items-center justify-center ${currentPage === i ? 'bg-emerald-600 text-white hover:bg-emerald-700' : ''}`}
+          >
+            {i}
+          </Button>
+        );
+      }
+      return pages;
+    };
+
+    return (
+      <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 px-4 py-3">
+        <div className="text-sm text-slate-500">
+          Menampilkan <span className="font-medium text-slate-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> hingga <span className="font-medium text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, totalItems)}</span> dari <span className="font-medium text-slate-900 dark:text-white">{totalItems}</span> data
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-2 h-8"
+          >
+            &lt;
+          </Button>
+          {renderPageNumbers()}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage((p) => p + 1)}
+            disabled={currentPage >= totalPages}
+            className="px-2 h-8"
+          >
+            &gt;
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -64,9 +158,14 @@ export default function UsersPage() {
             {currentApp ? `Kelola hak akses khusus untuk ${currentApp.name}` : `Kelola data ${title}`}
           </p>
         </div>
-        <Button icon={<Plus className="h-4 w-4" />} onClick={() => setShowCreate(true)}>
-          Tambah Pengguna
-        </Button>
+        {userType !== "eksternal_masyarakat" && (
+          <Button icon={<Plus className="h-4 w-4" />} onClick={() => {
+            setEditingUser(null);
+            setShowForm(true);
+          }}>
+            Tambah Pengguna
+          </Button>
+        )}
       </div>
 
       {userType === "internal_admin" ? (
@@ -111,10 +210,13 @@ export default function UsersPage() {
           <Card>
             <CardBody className="p-0">
               <UserTable
-                data={filtered?.filter((u) => u.role === activeTab) || []}
+                data={filtered?.filter((u) => u.role === activeTab).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || []}
                 loading={isLoading}
-                onRowClick={(user) => router.push(`/dashboard/users/${user.id}`)}
+                isPegawai={false}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
+              {filtered && renderPagination(filtered.filter((u) => u.role === activeTab).length)}
             </CardBody>
           </Card>
         </div>
@@ -126,33 +228,70 @@ export default function UsersPage() {
               <input
                 placeholder="Cari pengguna..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setCurrentPage(1); // Reset page on search
+                }}
                 className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
               />
             </div>
           </CardHeader>
           <CardBody className="p-0">
             <UserTable
-              data={filtered || []}
+              data={filtered?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || []}
               loading={isLoading}
-              onRowClick={(user) => router.push(`/dashboard/users/${user.id}`)}
+              isPegawai={userType === "internal_pegawai"}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
+            {filtered && renderPagination(filtered.length)}
           </CardBody>
         </Card>
       )}
 
       <Dialog
-        open={showCreate}
-        onClose={() => setShowCreate(false)}
-        title="Tambah Pengguna Baru"
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingUser ? "Edit Pengguna" : "Tambah Pengguna Baru"}
         size="xl"
       >
         <UserForm
+          initialData={editingUser || undefined}
           defaultUserType={userType}
-          onSubmit={handleCreate}
-          onCancel={() => setShowCreate(false)}
-          loading={createUser.isPending}
+          onSubmit={handleSubmit}
+          onCancel={() => setShowForm(false)}
+          loading={createUser.isPending || updateUser.isPending}
         />
+      </Dialog>
+
+      <Dialog
+        open={!!deletingUser}
+        onClose={() => !deleteUser.isPending && setDeletingUser(null)}
+        title="Hapus Pengguna"
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            Apakah Anda yakin ingin menghapus pengguna <strong className="text-slate-900 dark:text-white">{deletingUser?.name}</strong>? 
+            Tindakan ini akan menghapus semua hak akses dan data login secara permanen.
+          </p>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button
+              variant="ghost"
+              onClick={() => setDeletingUser(null)}
+              disabled={deleteUser.isPending}
+            >
+              Batal
+            </Button>
+            <Button
+              variant="danger"
+              loading={deleteUser.isPending}
+              onClick={confirmDelete}
+            >
+              Ya, Hapus
+            </Button>
+          </div>
+        </div>
       </Dialog>
     </div>
   );

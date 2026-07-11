@@ -15,12 +15,16 @@ export async function GET(_request: NextRequest) {
     const apps = await db.select().from(satelliteApps);
     const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
 
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
     const logCounts = await db
       .select({
         schema: auditLogs.targetSchema,
         count: sql<number>`count(*)`,
       })
       .from(auditLogs)
+      .where(sql`${auditLogs.timestamp} >= ${thirtyDaysAgo}`)
       .groupBy(auditLogs.targetSchema);
 
     const result = apps.map((app, i) => {

@@ -64,7 +64,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (hasSupabaseSession && hasAal2 && (pathname === "/login" || pathname === "/")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard/apps", request.url));
   }
 
   return NextResponse.next();

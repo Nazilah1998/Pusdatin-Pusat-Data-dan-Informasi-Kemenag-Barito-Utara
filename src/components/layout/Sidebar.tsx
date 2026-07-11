@@ -18,9 +18,8 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/users", label: "Pengguna", icon: Users },
   { href: "/dashboard/apps", label: "Aplikasi", icon: Monitor },
+  { href: "/dashboard/users", label: "Pengguna", icon: Users },
   { href: "/dashboard/audit", label: "Audit Log", icon: Shield },
   { href: "/dashboard/reports", label: "Laporan", icon: BarChart3 },
 ];
@@ -35,12 +34,14 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
   const searchParams = useSearchParams();
   const appId = searchParams.get("appId");
   const { data: apps } = useApps();
-  const [penggunaOpen, setPenggunaOpen] = useState(false);
+  const [penggunaOpen, setPenggunaOpen] = useState(
+    pathname.startsWith("/dashboard/users") || pathname.startsWith("/dashboard/pejabat")
+  );
 
   return (
     <div className="flex h-full flex-col bg-white dark:bg-slate-900">
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-5">
-        <Link href="/dashboard" className="flex items-center gap-3">
+        <Link href="/dashboard/apps" className="flex items-center gap-3">
           <img
             src="/branding/kemenag.svg"
             alt="Kemenag"
@@ -125,6 +126,18 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
                       )}
                     >
                       Masyarakat Umum
+                    </Link>
+                    <Link
+                      href={`/dashboard/pejabat`}
+                      onClick={onClose}
+                      className={cn(
+                        "rounded-md px-3 py-2 text-sm font-medium transition-colors truncate",
+                        pathname.startsWith("/dashboard/pejabat")
+                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                      )}
+                    >
+                      Manajemen Pejabat
                     </Link>
                   </div>
                 )}

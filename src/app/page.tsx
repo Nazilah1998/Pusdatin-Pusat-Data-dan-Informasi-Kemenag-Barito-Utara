@@ -12,6 +12,7 @@ import {
 import { db } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { satelliteApps } from "@/db/schema";
+import { withRetry } from "@/lib/db-retry";
 
 const features = [
   {
@@ -39,10 +40,18 @@ const features = [
 export const dynamic = "force-dynamic";
 
 export default async function LandingPage() {
-  const apps = await db.query.satelliteApps.findMany({
-    where: eq(satelliteApps.status, "online"),
-    orderBy: (apps, { asc }) => [asc(apps.sortOrder)],
-  });
+  let apps: any[] = [];
+  try {
+    apps = await withRetry(
+      () => db.query.satelliteApps.findMany({
+        where: eq(satelliteApps.status, "online"),
+        orderBy: (apps, { asc }) => [asc(apps.sortOrder)],
+      }),
+      2, "LANDING"
+    );
+  } catch {
+    // Jika koneksi gagal total, tampilkan halaman tanpa daftar aplikasi
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors">

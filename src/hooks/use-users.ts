@@ -13,6 +13,7 @@ export function useUsers({ appId, userType }: { appId?: string; userType?: strin
   return useQuery<User[]>({
     queryKey: ["users", appId, userType],
     queryFn: () => api.get<User[]>(`/users${qs ? `?${qs}` : ""}`),
+    refetchInterval: 10000, // Auto-refresh setiap 10 detik
   });
 }
 

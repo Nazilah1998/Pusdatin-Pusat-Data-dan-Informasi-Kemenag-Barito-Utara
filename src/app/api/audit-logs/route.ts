@@ -5,6 +5,8 @@ import { db } from "@/lib/drizzle";
 import { auditLogs } from "@/db/schema";
 import { eq, desc, like, and, gte, lte } from "drizzle-orm";
 import { sql } from "drizzle-orm";
+import { withRetry } from "@/lib/db-retry";
+import { profiles } from "@/db/schema";
 
 export async function GET(request: NextRequest) {
   try {
@@ -37,24 +39,50 @@ export async function GET(request: NextRequest) {
       conditions.push(lte(auditLogs.timestamp, new Date(endDate)));
     }
 
-    let query = db.select().from(auditLogs).orderBy(desc(auditLogs.timestamp));
+    if (search) {
+      conditions.push(like(auditLogs.target, `%${search}%`));
+    }
+
+    let query = db
+      .select({
+        id: auditLogs.id,
+        action: auditLogs.action,
+        target: auditLogs.target,
+        targetSchema: auditLogs.targetSchema,
+        performedBy: sql<string>`COALESCE(${profiles.name}, ${auditLogs.performedBy})`,
+        beforeState: auditLogs.beforeState,
+        afterState: auditLogs.afterState,
+        ip: auditLogs.ip,
+        timestamp: auditLogs.timestamp,
+      })
+      .from(auditLogs)
+      .leftJoin(profiles, eq(auditLogs.performedBy, sql`${profiles.id}::text`))
+      .orderBy(desc(auditLogs.timestamp));
+    let total = 0;
 
     if (conditions.length > 0) {
       query = query.where(and(...conditions)) as typeof query;
-    }
-
-    if (search) {
-      query = query.where(like(auditLogs.target, `%${search}%`)) as typeof query;
+      const countQuery = db.select({ count: sql<number>`count(*)` }).from(auditLogs).where(and(...conditions));
+      const countResult = await countQuery;
+      total = Number(countResult[0]?.count || 0);
+    } else {
+      const totalLogsResult = await db.execute(sql`SELECT reltuples::bigint AS estimate FROM pg_class WHERE relname = 'audit_logs'`);
+      total = Number(totalLogsResult.rows[0]?.estimate || 0);
     }
 
     const offset = (page - 1) * limit;
-    const data = await query.limit(limit).offset(offset);
+    const rawData = await withRetry(
+      () => query.limit(limit).offset(offset),
+      2, "AUDIT"
+    );
 
-    const countResult = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(auditLogs);
-
-    const total = Number(countResult[0]?.count || 0);
+    const data = rawData.map(log => {
+      let displayTarget = log.target;
+      if (displayTarget.startsWith("auth ")) {
+        displayTarget = "Sistem Autentikasi"; // Bersihkan id panjang
+      }
+      return { ...log, target: displayTarget };
+    });
 
     return apiResponse({ data, total });
   } catch (err) {

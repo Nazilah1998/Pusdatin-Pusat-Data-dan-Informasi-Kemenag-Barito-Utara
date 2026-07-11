@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { apiResponse } from "@/lib/api-helpers";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,8 +19,23 @@ export async function POST(request: NextRequest) {
       return apiResponse({ message: "Sesi belum divalidasi dengan OTP" }, 403);
     }
 
-    const { returnTo: bodyReturnTo } = await request.json().catch(() => ({ returnTo: null }));
+    const { returnTo: bodyReturnTo, trustDevice } = await request.json().catch(() => ({ returnTo: null, trustDevice: false }));
     const returnTo = bodyReturnTo || new URL(request.url).searchParams.get('returnTo');
+
+    if (trustDevice) {
+      const secret = process.env.TURNSTILE_SECRET_KEY || 'pusdatin_secret_key';
+      const signature = crypto.createHmac('sha256', secret).update(session.user.id).digest('hex');
+      const cookieValue = `${session.user.id}.${signature}`;
+      
+      const cookieStore = await cookies();
+      cookieStore.set('trusted_device', cookieValue, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: '/',
+        sameSite: 'lax',
+      });
+    }
 
     if (returnTo) {
       // SSO Magic Link generation

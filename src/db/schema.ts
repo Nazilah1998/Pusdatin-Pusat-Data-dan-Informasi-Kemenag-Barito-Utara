@@ -8,11 +8,13 @@ import {
   varchar,
   boolean,
   numeric,
+  index,
 } from "drizzle-orm/pg-core";
 
 export const pusdatin = pgSchema("kemenag_pusdatin");
+export const ptsp = pgSchema("kemenag_ptsp");
 
-export const users = pusdatin.table("users", {
+export const profiles = pusdatin.table("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
@@ -21,6 +23,11 @@ export const users = pusdatin.table("users", {
   userType: varchar("user_type", { length: 50 }).notNull().default("internal_admin"),
   status: varchar("status", { length: 20 }).notNull().default("active"),
   avatar: text("avatar"),
+  phone: text("phone"),
+  address: text("address"),
+  isVerified: boolean("is_verified").default(true),
+  permissions: jsonb("permissions"),
+  avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -42,7 +49,7 @@ export const satelliteApps = pusdatin.table("satellite_apps", {
 
 export const appPermissions = pusdatin.table("app_permissions", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull().references(() => profiles.id, { onDelete: "cascade" }),
   appId: varchar("app_id", { length: 50 }).notNull().references(() => satelliteApps.id, { onDelete: "cascade" }),
   role: varchar("role", { length: 20 }).notNull().default("none"),
   features: jsonb("features"),
@@ -58,7 +65,10 @@ export const auditLogs = pusdatin.table("audit_logs", {
   afterState: jsonb("after_state"),
   ip: varchar("ip", { length: 50 }),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
-});
+}, (table) => ({
+  timestampIdx: index("audit_logs_timestamp_idx").on(table.timestamp),
+  targetSchemaIdx: index("audit_logs_target_schema_idx").on(table.targetSchema),
+}));
 
 export const systemMetrics = pusdatin.table("system_metrics", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -72,4 +82,43 @@ export const systemMetrics = pusdatin.table("system_metrics", {
   storageUsedGb: numeric("storage_used_gb", { precision: 10, scale: 2 }).default("0"),
   storageTotalGb: numeric("storage_total_gb", { precision: 10, scale: 2 }).default("0"),
   recordedAt: timestamp("recorded_at").defaultNow().notNull(),
+}, (table) => ({
+  recordedAtIdx: index("system_metrics_recorded_at_idx").on(table.recordedAt),
+}));
+
+export const profilesAdmin = pusdatin.table("profiles_admin", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  profileId: uuid("user_id").notNull().references(() => profiles.id, { onDelete: "cascade" }),
+  fullName: varchar("full_name", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const profilesPegawai = pusdatin.table("profiles_pegawai", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  profileId: uuid("user_id").notNull().references(() => profiles.id, { onDelete: "cascade" }),
+  nip: varchar("nip", { length: 50 }),
+  jabatan: varchar("jabatan", { length: 100 }),
+  pangkatGolongan: varchar("pangkat_golongan", { length: 50 }),
+  unitKerja: varchar("unit_kerja", { length: 255 }),
+  tipePejabat: varchar("tipe_pejabat", { length: 50 }),
+  orderIndex: integer("order_index").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const profilesPemohon = pusdatin.table("profiles_pemohon", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  profileId: uuid("user_id").notNull().references(() => profiles.id, { onDelete: "cascade" }),
+  fullName: varchar("full_name", { length: 255 }),
+  nik: varchar("nik", { length: 50 }).unique(),
+  noHp: varchar("no_hp", { length: 20 }),
+  alamat: text("alamat"),
+  pekerjaan: varchar("pekerjaan", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Alias for backward compatibility
+export { profiles as users };
+

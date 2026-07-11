@@ -2,10 +2,15 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "super_admin" | "admin" | "sub_admin";
+  role: "super_admin" | "admin" | "sub_admin" | "pegawai" | "user" | "pemohon";
   userType: "internal_admin" | "internal_pegawai" | "eksternal_masyarakat";
   status: "active" | "inactive";
   avatar?: string;
+  nip?: string;
+  jabatan?: string;
+  unitKerja?: string;
+  noHp?: string | null;
+  alamat?: string | null;
   createdAt: string;
   updatedAt: string;
   appPermissions: AppPermission[];

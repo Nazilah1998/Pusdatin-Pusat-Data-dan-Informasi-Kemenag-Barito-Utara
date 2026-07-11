@@ -5,6 +5,8 @@ import { getCurrentSessionContext } from "@/lib/auth";
 import { recordAudit } from "@/lib/audit";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { env } from "@/lib/env";
+import { cookies } from "next/headers";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -46,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     const session = await getCurrentSessionContext(authData.user);
-    if (!session.isAdmin) {
+    if (!session.isAdmin || !session.user) {
       await supabase.auth.signOut({ scope: "local" });
       return apiResponse({ message: "Akun ini tidak memiliki akses ke portal Pusdatin" }, 403);
     }
@@ -61,14 +63,55 @@ export async function POST(request: NextRequest) {
 
     const mfaEnrolled = authData.user.factors && authData.user.factors.some(f => f.factor_type === 'totp' && f.status === 'verified');
 
+    let isTrusted = false;
+    const cookieStore = await cookies();
+    const trustedCookie = cookieStore.get('trusted_device')?.value;
+    
+    if (trustedCookie) {
+      const [cookieUserId, signature] = trustedCookie.split('.');
+      if (cookieUserId === authData.user.id) {
+         const secret = process.env.TURNSTILE_SECRET_KEY || 'pusdatin_secret_key';
+         const expectedSignature = crypto.createHmac('sha256', secret).update(authData.user.id).digest('hex');
+         if (signature === expectedSignature) {
+           isTrusted = true;
+         }
+      }
+    }
+
     const returnTo = bodyReturnTo || new URL(request.url).searchParams.get('returnTo');
 
-    // (Magic link logic moved to /api/auth/mfa/complete)
+    if (!isTrusted) {
+      return apiResponse({
+        user: session.user,
+        token: authData.session?.access_token ?? "",
+        mfaRequired: true,
+        mfaEnrolled: mfaEnrolled,
+      });
+    }
+
+    // Generate SSO link directly if MFA is skipped/not required
+    if (returnTo) {
+      const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
+      const adminClient = createAdminSupabaseClient();
+      const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
+        type: 'magiclink',
+        email: session.user.email!,
+        options: {
+          redirectTo: returnTo
+        }
+      });
+
+      if (!linkError && linkData?.properties?.action_link) {
+        return apiResponse({
+          ssoLink: linkData.properties.action_link
+        });
+      }
+    }
 
     return apiResponse({
       user: session.user,
       token: authData.session?.access_token ?? "",
-      mfaRequired: true,
+      mfaRequired: false,
       mfaEnrolled: mfaEnrolled,
     });
   } catch (err) {

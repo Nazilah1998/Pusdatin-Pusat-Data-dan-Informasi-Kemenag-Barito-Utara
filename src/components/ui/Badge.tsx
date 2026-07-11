@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type BadgeVariant = "default" | "secondary" | "success" | "warning" | "danger" | "info";
+type BadgeVariant = "default" | "secondary" | "success" | "warning" | "danger" | "info" | "outline";
 
 interface BadgeProps {
   variant?: BadgeVariant;
@@ -15,6 +15,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   warning: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
   danger: "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400",
   info: "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+  outline: "border border-slate-200 text-slate-600 bg-transparent dark:border-slate-700 dark:text-slate-400",
 };
 
 export function Badge({ variant = "default", children, className }: BadgeProps) {

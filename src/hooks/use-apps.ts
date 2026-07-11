@@ -42,7 +42,8 @@ export function useSystemHealth() {
   return useQuery<SystemHealth>({
     queryKey: ["system-health"],
     queryFn: () => api.get<SystemHealth>("/system/health"),
-    refetchInterval: 10000,
+    refetchInterval: (query) => (query.state.error ? false : 10000),
+    retry: false,
   });
 }
 

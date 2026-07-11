@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { apiResponse } from "@/lib/api-helpers";
 import { getCurrentSessionContext } from "@/lib/auth";
 import { db } from "@/lib/drizzle";
-import { users as usersTable, appPermissions, satelliteApps } from "@/db/schema";
+import { users as usersTable, appPermissions, satelliteApps, profilesPegawai } from "@/db/schema";
 import { recordAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rate-limit";
 import { eq, and, sql } from "drizzle-orm";
@@ -29,10 +29,14 @@ export async function GET(
         role: usersTable.role,
         userType: usersTable.userType,
         status: usersTable.status,
+        nip: profilesPegawai.nip,
+        jabatan: profilesPegawai.jabatan,
+        unitKerja: profilesPegawai.unitKerja,
         createdAt: usersTable.createdAt,
         updatedAt: usersTable.updatedAt,
       })
       .from(usersTable)
+      .leftJoin(profilesPegawai, eq(usersTable.id, profilesPegawai.profileId))
       .where(eq(usersTable.id, id))
       .limit(1);
 
@@ -78,15 +82,21 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, email, password, role, status, userType, appPermissions: newPerms } = body;
+    const { name, email, password, role, status, userType, nip, jabatan, unitKerja, appPermissions: newPerms } = body;
 
     const updateData: Record<string, unknown> = {};
-    if (name) updateData.name = name;
-    if (email) updateData.email = email;
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
     if (password) updateData.passwordHash = await bcrypt.hash(password, 10);
-    if (role) updateData.role = role;
-    if (status) updateData.status = status;
-    if (userType) updateData.userType = userType;
+    if (role !== undefined) updateData.role = role;
+    if (status !== undefined) updateData.status = status;
+    if (userType !== undefined) updateData.userType = userType;
+    updateData.updatedAt = new Date();
+
+    const pegawaiData: Record<string, unknown> = {};
+    if (nip !== undefined) pegawaiData.nip = nip;
+    if (jabatan !== undefined) pegawaiData.jabatan = jabatan;
+    if (unitKerja !== undefined) pegawaiData.unitKerja = unitKerja;
     updateData.updatedAt = new Date();
 
     const [oldUser] = await db
@@ -97,6 +107,19 @@ export async function PUT(
 
     if (oldUser) {
       await db.update(usersTable).set(updateData).where(eq(usersTable.id, id));
+
+      if (Object.keys(pegawaiData).length > 0) {
+        pegawaiData.updatedAt = new Date();
+        const [existingPegawai] = await db.select().from(profilesPegawai).where(eq(profilesPegawai.profileId, id)).limit(1);
+        if (existingPegawai) {
+          await db.update(profilesPegawai).set(pegawaiData).where(eq(profilesPegawai.profileId, id));
+        } else {
+          await db.insert(profilesPegawai).values({
+            profileId: id,
+            ...pegawaiData
+          });
+        }
+      }
 
       if (newPerms) {
         await db.delete(appPermissions).where(eq(appPermissions.userId, id));
@@ -205,23 +228,22 @@ export async function DELETE(
         const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
         const adminClient = createAdminSupabaseClient();
 
-        // Cari auth user berdasarkan email untuk mendapatkan auth ID yang benar
-        const { data: authUsers } = await adminClient.auth.admin.listUsers();
-        const authUser = authUsers?.users.find(u => u.email === user.email);
+        // Hapus dari kemenag_surat.pengguna (E-Surat)
+        try {
+          await db.execute(sql`
+            DELETE FROM "kemenag_surat"."pengguna"
+            WHERE id = ${user.id}
+          `);
+        } catch (suratDeleteErr) {
+          console.error("[DELETE ERROR] Failed to delete from kemenag_surat:", suratDeleteErr);
+        }
 
-        if (authUser) {
-          // Hapus dari kemenag_surat.pengguna (E-Surat)
-          try {
-            await db.execute(sql`
-              DELETE FROM "kemenag_surat"."pengguna"
-              WHERE id = ${authUser.id}
-            `);
-          } catch (suratDeleteErr) {
-            console.error("[DELETE ERROR] Failed to delete from kemenag_surat:", suratDeleteErr);
-          }
-
-          // Hapus dari Supabase Auth
-          await adminClient.auth.admin.deleteUser(authUser.id);
+        // Hapus dari Supabase Auth secara langsung menggunakan ID (karena profiles.id == auth.users.id)
+        const { error: authError } = await adminClient.auth.admin.deleteUser(user.id);
+        if (authError) {
+          console.error("[DELETE ERROR] Supabase Auth Delete:", authError);
+        } else {
+          console.log("[DELETE SUCCESS] Deleted from Supabase Auth:", user.id);
         }
       } catch (authDeleteErr) {
         console.error("[DELETE ERROR] Failed to delete from Supabase Auth:", authDeleteErr);
@@ -231,7 +253,7 @@ export async function DELETE(
         action: "DELETE",
         target: `user:${user.email}`,
         targetSchema: "kemenag_pusdatin",
-        performedBy: session.user?.email ?? "unknown",
+        performedBy: session.user?.id ?? "unknown",
         ip: getClientIp(request),
         beforeState: { name: user.name, email: user.email, role: user.role },
       });

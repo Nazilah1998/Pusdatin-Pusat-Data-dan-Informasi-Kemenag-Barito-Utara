@@ -30,9 +30,8 @@ export async function GET(_request: NextRequest) {
       .from(satelliteApps)
       .where(eq(satelliteApps.status, "online"));
 
-    const totalLogs = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(auditLogs);
+    const totalLogsResult = await db.execute(sql`SELECT reltuples::bigint AS estimate FROM pg_class WHERE relname = 'audit_logs'`);
+    const estimatedTotalLogs = totalLogsResult.rows[0]?.estimate || 0;
 
     const todayLogs = await db
       .select({ count: sql<number>`count(*)` })
@@ -46,7 +45,7 @@ export async function GET(_request: NextRequest) {
       activeUsers: Number(activeUsers[0]?.count || 0),
       totalApps: Number(totalApps[0]?.count || 0),
       onlineApps: Number(onlineApps[0]?.count || 0),
-      totalLogs: Number(totalLogs[0]?.count || 0),
+      totalLogs: Number(estimatedTotalLogs),
       todayLogs: Number(todayLogs[0]?.count || 0),
     });
   } catch (err) {

@@ -4,6 +4,7 @@ import { getCurrentSessionContext } from "@/lib/auth";
 import { db } from "@/lib/drizzle";
 import { satelliteApps } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
+import { withRetry } from "@/lib/db-retry";
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,10 @@ export async function GET() {
       return apiResponse({ message: "Unauthorized" }, 401);
     }
 
-    const apps = await db.select().from(satelliteApps).orderBy(asc(satelliteApps.sortOrder));
+    const apps = await withRetry(
+      () => db.select().from(satelliteApps).orderBy(asc(satelliteApps.sortOrder)),
+      2, "APPS"
+    );
     return apiResponse(apps);
   } catch (err) {
     console.error("[APPS] GET error:", err);
