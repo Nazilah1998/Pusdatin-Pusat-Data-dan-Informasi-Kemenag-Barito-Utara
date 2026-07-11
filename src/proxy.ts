@@ -45,7 +45,10 @@ export function proxy(request: NextRequest) {
       if (accessToken) {
         const payloadStr = accessToken.split('.')[1];
         const payload = JSON.parse(atob(payloadStr.replace(/-/g, '+').replace(/_/g, '/')));
-        if (payload.aal === 'aal2') {
+        
+        if (payload.exp && payload.exp * 1000 < Date.now()) {
+          hasSupabaseSession = false;
+        } else if (payload.aal === 'aal2') {
           hasAal2 = true;
         }
       }
