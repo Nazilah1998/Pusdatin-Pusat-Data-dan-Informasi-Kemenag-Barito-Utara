@@ -28,12 +28,13 @@ export async function GET(
       .where(eq(satelliteApps.id, id));
 
     if (!app) {
-      return NextResponse.json({ status: "online" }, { headers: corsHeaders }); // Fallback for unknown apps
+      console.log(`[PUBLIC APPS STATUS] App not found for ID: '${id}'`);
+      return NextResponse.json({ status: "online", _debug: "not_found", requestedId: id }, { headers: corsHeaders }); // Fallback for unknown apps
     }
 
     return NextResponse.json({ status: app.status }, { headers: corsHeaders });
   } catch (err) {
     console.error("[PUBLIC APPS STATUS] GET error:", err);
-    return NextResponse.json({ status: "online" }, { headers: corsHeaders }); // Fallback on error to not break apps
+    return NextResponse.json({ status: "online", _debug: "error", message: err instanceof Error ? err.message : String(err) }, { headers: corsHeaders }); // Fallback on error to not break apps
   }
 }

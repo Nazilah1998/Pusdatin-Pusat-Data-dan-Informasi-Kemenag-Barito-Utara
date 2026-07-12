@@ -37,9 +37,9 @@ export function Dropdown({ trigger, items, align = "right", position = "bottom" 
       {open && (
         <div
           className={cn(
-            "absolute z-50 min-w-[180px] animate-fade-in overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 py-1 shadow-lg",
+            "absolute z-50 min-w-[180px] animate-fade-in overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#1a1d24] p-1.5 shadow-xl",
             align === "right" ? "right-0" : "left-0",
-            position === "top" ? "bottom-full mb-1" : "top-full mt-1"
+            position === "top" ? "bottom-full mb-1" : "top-full mt-2"
           )}
         >
           {items.map((item, i) => (
@@ -50,9 +50,9 @@ export function Dropdown({ trigger, items, align = "right", position = "bottom" 
                 setOpen(false);
               }}
               className={cn(
-                "flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors",
+                "flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 item.danger
-                  ? "text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                  ? "text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
                   : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800",
               )}
             >

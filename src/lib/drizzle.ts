@@ -6,15 +6,16 @@ import * as schema from "../db/schema";
 const globalForDb = globalThis as unknown as {
   postgresPool: pg.Pool | undefined;
 };
+// Force reload pool 1
 
 const isProd = process.env.NODE_ENV === "production";
 
 function createPool() {
   return new pg.Pool({
     connectionString: env.databaseUrl,
-    max: isProd ? 10 : 3,
-    idleTimeoutMillis: isProd ? 30000 : 5000,
-    connectionTimeoutMillis: 15000, // VPS remote butuh waktu lebih lama
+    max: isProd ? 15 : 10,
+    idleTimeoutMillis: isProd ? 30000 : 10000,
+    connectionTimeoutMillis: 30000, // Diperpanjang agar antrian tidak cepat timeout
     allowExitOnIdle: !isProd,
     keepAlive: true,
     keepAliveInitialDelayMillis: 10000,

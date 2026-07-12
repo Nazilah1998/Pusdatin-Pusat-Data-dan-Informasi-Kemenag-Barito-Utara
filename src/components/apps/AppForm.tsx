@@ -107,11 +107,11 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
               Deskripsi Singkat
             </label>
             <textarea
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               rows={2}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -120,7 +120,7 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
         </div>
 
         <div className="flex flex-col items-center gap-2 pt-6">
-          <div className="h-20 w-20 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden relative group">
+          <div className="h-20 w-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center overflow-hidden relative group">
             {formData.icon ? (
               <img
                 src={formData.icon}
@@ -129,7 +129,7 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
                 style={{ transform: `scale(${formData.iconScale / 100})` }}
               />
             ) : (
-              <span className="text-xs text-slate-400 font-medium">No Logo</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">No Logo</span>
             )}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <Button
@@ -144,7 +144,7 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
               </Button>
             </div>
           </div>
-          <span className="text-[10px] text-slate-500 max-w-[100px] text-center">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 max-w-[100px] text-center">
             JPG/PNG/SVG<br />Max 2MB
           </span>
           {formData.icon && (
@@ -157,7 +157,7 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
                 onChange={(e) => setFormData({ ...formData, iconScale: parseInt(e.target.value, 10) })}
                 className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
               />
-              <div className="text-center text-[10px] text-slate-500 mt-1">
+              <div className="text-center text-[10px] text-slate-500 dark:text-slate-400 mt-1">
                 Ukuran: {formData.iconScale}%
               </div>
             </div>

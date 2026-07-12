@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/ui/Avatar";
 import { Dropdown } from "@/components/ui/Dropdown";
-import { Menu, LogOut, User, Moon, Sun } from "lucide-react";
+import { Menu, LogOut, Moon, Sun, ChevronDown } from "lucide-react";
 
 export function Header() {
   const { toggleSidebar, isDark, toggleTheme } = useUIStore();
@@ -58,14 +58,10 @@ export function Header() {
                     {user?.email || "..."}
                   </p>
                 </div>
+                <ChevronDown className="h-4 w-4 text-slate-400" />
               </button>
             }
             items={[
-              {
-                label: "Profil",
-                icon: <User className="h-4 w-4" />,
-                onClick: () => {},
-              },
               {
                 label: "Keluar",
                 icon: <LogOut className="h-4 w-4" />,

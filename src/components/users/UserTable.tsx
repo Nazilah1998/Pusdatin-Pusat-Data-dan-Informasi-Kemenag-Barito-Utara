@@ -21,7 +21,7 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
           sortable: true,
           render: (user: User) => (
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 border border-slate-200">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <img
                   src="/branding/kemenag.svg"
                   alt="Kemenag"
@@ -29,8 +29,8 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
                 />
               </div>
               <div>
-                <p className="font-medium text-slate-900">{user.name}</p>
-                <p className="text-xs text-slate-500">{user.email}</p>
+                <p className="font-medium text-slate-900 dark:text-slate-100">{user.name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
               </div>
             </div>
           ),
@@ -79,7 +79,7 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
                   e.stopPropagation();
                   onEdit?.(user);
                 }}
-                className="inline-flex items-center justify-center rounded-lg p-2 bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100 transition-all hover:bg-emerald-100 hover:text-emerald-700 hover:ring-emerald-200"
+                className="inline-flex items-center justify-center rounded-lg p-2 bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100 transition-all hover:bg-emerald-100 hover:text-emerald-700 hover:ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:ring-emerald-800/50 dark:hover:bg-emerald-900/50 dark:hover:text-emerald-300"
                 title="Edit Profil"
               >
                 <Edit className="h-4 w-4" />
@@ -89,7 +89,7 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
                   e.stopPropagation();
                   onDelete?.(user);
                 }}
-                className="inline-flex items-center justify-center rounded-lg p-2 bg-red-50 text-red-600 ring-1 ring-red-100 transition-all hover:bg-red-100 hover:text-red-700 hover:ring-red-200"
+                className="inline-flex items-center justify-center rounded-lg p-2 bg-red-50 text-red-600 ring-1 ring-red-100 transition-all hover:bg-red-100 hover:text-red-700 hover:ring-red-200 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-800/50 dark:hover:bg-red-900/50 dark:hover:text-red-300"
                 title="Hapus Profil"
               >
                 <Trash2 className="h-4 w-4" />
@@ -110,20 +110,20 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
         sortable: true,
         render: (user: User) => {
           const fallbackNip = user.email.includes("@") ? user.email.split("@")[0] : "-";
-          return <span className="text-slate-700">{user.nip || fallbackNip}</span>;
+          return <span className="text-slate-700 dark:text-slate-300">{user.nip || fallbackNip}</span>;
         },
       },
       {
         key: "jabatan",
         header: "Jabatan",
         sortable: true,
-        render: (user: User) => <span className="text-slate-700">{user.jabatan || "-"}</span>,
+        render: (user: User) => <span className="text-slate-700 dark:text-slate-300">{user.jabatan || "-"}</span>,
       },
       {
         key: "unitKerja",
         header: "Unit Kerja",
         sortable: true,
-        render: (user: User) => <span className="text-slate-700">{user.unitKerja || "-"}</span>,
+        render: (user: User) => <span className="text-slate-700 dark:text-slate-300">{user.unitKerja || "-"}</span>,
       },
       {
         key: "noHp",
@@ -136,7 +136,7 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
           } else if (displayHp && displayHp.startsWith("+62")) {
             displayHp = "0" + displayHp.substring(3);
           }
-          return <span className="text-slate-700">{displayHp || "-"}</span>;
+          return <span className="text-slate-700 dark:text-slate-300">{displayHp || "-"}</span>;
         },
       }
     );

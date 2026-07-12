@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Dialog } from "@/components/ui/Dialog";
 import { Badge } from "@/components/ui/Badge";
@@ -26,6 +26,12 @@ export default function AuditPage() {
 
   const { data: apps } = useApps();
 
+  useEffect(() => {
+    if (apps && apps.length > 0 && !schemaTab) {
+      setSchemaTab(apps[0].schemaName || apps[0].id);
+    }
+  }, [apps, schemaTab]);
+
   const { data, isLoading } = useAuditLogs({
     action: action || undefined,
     search: search || undefined,
@@ -34,8 +40,6 @@ export default function AuditPage() {
   });
 
   const tabs = [
-    { id: "", label: "Semua Sistem" },
-    { id: "kemenag_pusdatin", label: "Pusdatin (Pusat)" },
     ...(apps || []).map((app: any) => ({
       id: app.schemaName || app.id,
       label: app.name,
