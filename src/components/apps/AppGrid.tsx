@@ -165,7 +165,7 @@ export function AppGrid({
                       <Database className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">Schema DB</span>
                     </div>
-                    <div className="flex items-center gap-1.5 w-full">
+                    <div className="flex items-center gap-1.5 w-full min-w-0">
                       <span
                         className="flex-1 min-w-0 truncate font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 px-2 py-1 rounded-md border border-slate-100 dark:border-slate-800"
                         title={app.schemaName || app.schema}
@@ -190,7 +190,7 @@ export function AppGrid({
                       <Globe className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">URL Website</span>
                     </div>
-                    <div className="flex items-center gap-1.5 w-full">
+                    <div className="flex items-center gap-1.5 w-full min-w-0">
                       <span
                         className="flex-1 min-w-0 truncate font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded-md border border-emerald-100/50 dark:border-emerald-900/50"
                         title={app.url || ""}
@@ -213,7 +213,7 @@ export function AppGrid({
                 </div>
 
                 <div className="mt-auto flex flex-wrap items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 gap-3">
-                  <div className="relative flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg w-[240px]">
+                  <div className="relative flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg w-full sm:w-[240px]">
                     <div 
                       className={cn(
                         "absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-md shadow-sm transition-all duration-300 ease-out", 
@@ -254,16 +254,18 @@ export function AppGrid({
                     </button>
                   </div>
 
-                  <Dropdown
-                    trigger={
-                      <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:text-emerald-800 dark:hover:text-emerald-300">
-                        Buka di local
-                        <Server className="h-3.5 w-3.5" />
-                      </button>
-                    }
-                    items={dropdownItems}
-                    position={index >= apps.length - 3 ? "top" : "bottom"}
-                  />
+                    <div className="w-full sm:w-auto mt-2 sm:mt-0">
+                      <Dropdown
+                        trigger={
+                          <button className="inline-flex w-full sm:w-auto items-center justify-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:text-emerald-800 dark:hover:text-emerald-300">
+                            Buka di local
+                            <Server className="h-3.5 w-3.5" />
+                          </button>
+                        }
+                        items={dropdownItems}
+                        position={index >= apps.length - 3 ? "top" : "bottom"}
+                      />
+                    </div>
                 </div>
               </CardBody>
             </Card>

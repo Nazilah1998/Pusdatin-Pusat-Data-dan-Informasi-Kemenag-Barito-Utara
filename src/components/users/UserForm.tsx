@@ -100,7 +100,7 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
       userType,
       status,
       ...(userType === "internal_pegawai" ? { nip, jabatan, unitKerja } : {}),
-      appPermissions: userType === "internal_admin" ? appPermissions.filter((p) => p.role !== "none") : [],
+      appPermissions: userType === "internal_admin" && finalRole !== "super_admin" ? appPermissions.filter((p) => p.role !== "none") : [],
     });
   };
 
@@ -182,7 +182,7 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
         />
       </div>
 
-      {userType === "internal_admin" && (
+      {userType === "internal_admin" && role !== "super_admin" && (
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
             Hak Akses per Aplikasi (RBAC) & Fitur

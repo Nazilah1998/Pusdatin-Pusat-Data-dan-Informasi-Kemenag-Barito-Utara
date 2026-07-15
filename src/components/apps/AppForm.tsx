@@ -95,8 +95,8 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex gap-4 items-start">
-        <div className="flex-1 space-y-4">
+      <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
+        <div className="flex-1 space-y-4 w-full">
           <div>
             <Input
               id="name"
@@ -119,8 +119,8 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-2 pt-6">
-          <div className="h-20 w-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center overflow-hidden relative group">
+        <div className="flex flex-row sm:flex-col items-center justify-center gap-4 pt-2 sm:pt-6 w-full sm:w-auto">
+          <div className="h-20 w-20 shrink-0 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center overflow-hidden relative group">
             {formData.icon ? (
               <img
                 src={formData.icon}
@@ -144,24 +144,26 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
               </Button>
             </div>
           </div>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 max-w-[100px] text-center">
-            JPG/PNG/SVG<br />Max 2MB
-          </span>
-          {formData.icon && (
-            <div className="w-full mt-1">
-              <input
-                type="range"
-                min="10"
-                max="150"
-                value={formData.iconScale}
-                onChange={(e) => setFormData({ ...formData, iconScale: parseInt(e.target.value, 10) })}
-                className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-              />
-              <div className="text-center text-[10px] text-slate-500 dark:text-slate-400 mt-1">
-                Ukuran: {formData.iconScale}%
+          <div className="flex flex-col items-start sm:items-center">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 max-w-[100px] text-left sm:text-center">
+              JPG/PNG/SVG<br />Max 2MB
+            </span>
+            {formData.icon && (
+              <div className="w-full mt-1">
+                <input
+                  type="range"
+                  min="10"
+                  max="150"
+                  value={formData.iconScale}
+                  onChange={(e) => setFormData({ ...formData, iconScale: parseInt(e.target.value, 10) })}
+                  className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <div className="text-left sm:text-center text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                  Ukuran: {formData.iconScale}%
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           <input
             type="file"
             ref={fileInputRef}
@@ -182,7 +184,7 @@ export function AppForm({ onSubmit, onCancel, loading }: AppFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <Input
             id="schemaName"

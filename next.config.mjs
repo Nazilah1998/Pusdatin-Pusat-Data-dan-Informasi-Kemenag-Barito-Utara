@@ -1,3 +1,12 @@
+import withPWAInit from "@ducanh2912/next-pwa";
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: false,
+  register: true,
+  skipWaiting: true,
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
@@ -23,7 +32,8 @@ const nextConfig = {
       },
     ];
   },
+  turbopack: {},
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);
 // trigger reload

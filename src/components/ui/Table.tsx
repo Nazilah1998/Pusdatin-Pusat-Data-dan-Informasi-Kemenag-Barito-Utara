@@ -59,7 +59,7 @@ export function Table<T>({
               <th
                 key={col.key}
                 className={cn(
-                  "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400",
+                  "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap",
                   col.sortable && "cursor-pointer select-none hover:text-slate-700 dark:hover:text-slate-200",
                   col.className,
                 )}
@@ -112,7 +112,7 @@ export function Table<T>({
                 onClick={() => onRowClick?.(item)}
               >
                 {columns.map((col) => (
-                  <td key={col.key} className={cn("px-4 py-3 text-sm text-slate-700 dark:text-slate-300", col.className)}>
+                  <td key={col.key} className={cn("px-4 py-3 text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap", col.className)}>
                     {col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? "")}
                   </td>
                 ))}

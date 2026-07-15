@@ -5,10 +5,10 @@ import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AppGrid } from "@/components/apps/AppGrid";
 import { AppForm } from "@/components/apps/AppForm";
-import { useApps, useToggleMaintenance, useSystemHealth, useBulkToggleMaintenance, useCreateApp } from "@/hooks/use-apps";
+import { useApps, useToggleMaintenance, useBulkToggleMaintenance, useCreateApp } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
 import type { SateliteApp } from "@/types";
-import { Cpu, HardDrive, MemoryStick, AlertTriangle, Settings2, CheckCircle2, Plus } from "lucide-react";
+import { AlertTriangle, Settings2, CheckCircle2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Dialog } from "@/components/ui/Dialog";
@@ -18,7 +18,6 @@ export default function AppsPage() {
   const toggleMutation = useToggleMaintenance();
   const bulkToggleMutation = useBulkToggleMaintenance();
   const createAppMutation = useCreateApp();
-  const { data: health } = useSystemHealth();
   const [confirmBulkStatus, setConfirmBulkStatus] = useState<"online" | "maintenance" | null>(null);
   const [showAddApp, setShowAddApp] = useState(false);
 
@@ -88,78 +87,6 @@ export default function AppsPage() {
             ]}
           />
         </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardBody>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                <Cpu className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <ProgressBar
-                  label="CPU"
-                  subtitle={health?.cpuCores ? `${health.cpuCores} Cores` : undefined}
-                  value={health?.cpu ?? 0}
-                  variant={
-                    (health?.cpu ?? 0) > 80
-                      ? "danger"
-                      : (health?.cpu ?? 0) > 60
-                        ? "warning"
-                        : "default"
-                  }
-                />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-                <MemoryStick className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <ProgressBar
-                  label="RAM"
-                  subtitle={health?.ramTotalGb ? `${health.ramUsedGb} GB / ${health.ramTotalGb} GB` : undefined}
-                  value={health?.ram ?? 0}
-                  variant={
-                    (health?.ram ?? 0) > 80
-                      ? "danger"
-                      : (health?.ram ?? 0) > 60
-                        ? "warning"
-                        : "default"
-                  }
-                />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                <HardDrive className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <ProgressBar
-                  label="Penyimpanan"
-                  subtitle={health?.storageTotalGb ? `${health.storageUsedGb} GB / ${health.storageTotalGb} GB` : undefined}
-                  value={health?.storage ?? 0}
-                  variant={
-                    (health?.storage ?? 0) > 80
-                      ? "danger"
-                      : (health?.storage ?? 0) > 60
-                        ? "warning"
-                        : "default"
-                  }
-                />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
       </div>
 
       <Card>

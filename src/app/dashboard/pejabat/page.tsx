@@ -33,6 +33,7 @@ export default function PejabatPage() {
   const [tipePejabat, setTipePejabat] = useState("Atasan Langsung");
   const [orderIndex, setOrderIndex] = useState(0);
   const [selectedPegawaiId, setSelectedPegawaiId] = useState("");
+  const [nipInput, setNipInput] = useState("");
   
   const { data: pegawaiList } = useUsers({ userType: "internal_pegawai" });
 
@@ -66,6 +67,7 @@ export default function PejabatPage() {
     } else {
       setEditingId(null);
       setSelectedPegawaiId("");
+      setNipInput("");
       setTipePejabat("Atasan Langsung");
       setOrderIndex(0);
     }
@@ -222,22 +224,51 @@ export default function PejabatPage() {
             required
           />
           {!editingId ? (
-            <Select
-              id="pegawai"
-              label="Pilih Pegawai"
-              value={selectedPegawaiId}
-              onChange={(e) => setSelectedPegawaiId(e.target.value)}
-              options={[
-                { value: "", label: "-- Pilih Pegawai --" },
-                ...(pegawaiList
-                  ?.filter((p) => !data.some((d) => d.id === p.id)) // Hilangkan yang sudah jadi pejabat
-                  .map((p) => ({
-                    value: p.id,
-                    label: `${p.name} - ${p.nip || p.email.split("@")[0]}`,
-                  })) || []),
-              ]}
-              required
-            />
+            <div className="space-y-3">
+              <Input
+                id="nipSearch"
+                label="Cari Pegawai (Berdasarkan NIP)"
+                list="pegawai-list"
+                placeholder="Ketik atau paste NIP di sini..."
+                value={nipInput}
+                onChange={(e) => {
+                  setNipInput(e.target.value);
+                  const found = pegawaiList?.find(
+                    (p) =>
+                      (p.nip === e.target.value || p.email === e.target.value) &&
+                      !data.some((d) => d.id === p.id)
+                  );
+                  setSelectedPegawaiId(found ? found.id : "");
+                }}
+                required
+              />
+              <datalist id="pegawai-list">
+                {pegawaiList
+                  ?.filter((p) => !data.some((d) => d.id === p.id))
+                  .map((p) => (
+                    <option key={p.id} value={p.nip || p.email}>
+                      {p.name}
+                    </option>
+                  ))}
+              </datalist>
+
+              {selectedPegawaiId ? (
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-100 dark:border-emerald-800">
+                  <p className="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold mb-1">
+                    Pegawai Terpilih:
+                  </p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                    {pegawaiList?.find((p) => p.id === selectedPegawaiId)?.name}
+                  </p>
+                </div>
+              ) : nipInput.length > 8 ? (
+                <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-100 dark:border-amber-800">
+                  <p className="text-sm text-amber-600 dark:text-amber-400">
+                    NIP tidak ditemukan atau pegawai sudah menjadi pejabat.
+                  </p>
+                </div>
+              ) : null}
+            </div>
           ) : (
             <div className="space-y-1">
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Pegawai Terpilih</label>

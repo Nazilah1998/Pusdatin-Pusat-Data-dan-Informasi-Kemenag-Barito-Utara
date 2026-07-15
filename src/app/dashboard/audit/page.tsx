@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Dialog } from "@/components/ui/Dialog";
 import { Badge } from "@/components/ui/Badge";
+import { Select } from "@/components/ui/Select";
 import { AuditTable } from "@/components/audit/AuditTable";
 import { AuditFilters } from "@/components/audit/AuditFilters";
 import { useAuditLogs, useDeleteAuditLogs } from "@/hooks/use-audit";
@@ -65,7 +66,18 @@ export default function AuditPage() {
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      {/* Mobile Select */}
+      <div className="block sm:hidden">
+        <Select
+          id="schemaTab"
+          value={schemaTab}
+          onChange={(e) => setSchemaTab(e.target.value)}
+          options={tabs.map(tab => ({ value: tab.id, label: tab.label }))}
+        />
+      </div>
+
+      {/* Desktop Buttons */}
+      <div className="hidden sm:flex flex-wrap gap-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}

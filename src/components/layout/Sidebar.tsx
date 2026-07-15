@@ -15,6 +15,8 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  Database,
+  Server,
 } from "lucide-react";
 
 const navItems = [
@@ -22,6 +24,7 @@ const navItems = [
   { href: "/dashboard/users", label: "Pengguna", icon: Users },
   { href: "/dashboard/audit", label: "Audit Log", icon: Shield },
   { href: "/dashboard/reports", label: "Laporan", icon: BarChart3 },
+  { href: "/dashboard/infrastructure", label: "Infrastruktur", icon: Server },
 ];
 
 interface SidebarProps {
@@ -89,8 +92,13 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
                     <ChevronDown className="h-4 w-4 text-slate-400" />
                   )}
                 </button>
-                {penggunaOpen && (
-                  <div className="ml-8 mt-1 flex flex-col space-y-1 border-l border-slate-100 dark:border-slate-800 pl-3">
+                <div
+                  className={cn(
+                    "grid transition-all duration-300 ease-in-out",
+                    penggunaOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0 mt-0"
+                  )}
+                >
+                  <div className="overflow-hidden flex flex-col space-y-1 border-l border-slate-100 dark:border-slate-800 pl-3 ml-8">
                     <Link
                       href={`${item.href}?type=internal_admin`}
                       onClick={onClose}
@@ -140,7 +148,7 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
                       Manajemen Pejabat
                     </Link>
                   </div>
-                )}
+                </div>
               </div>
             );
           }
