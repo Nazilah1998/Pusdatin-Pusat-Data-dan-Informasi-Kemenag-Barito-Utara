@@ -11,6 +11,8 @@ export interface User {
   unitKerja?: string;
   noHp?: string | null;
   alamat?: string | null;
+  nik?: string | null;
+  pekerjaan?: string | null;
   createdAt: string;
   updatedAt: string;
   appPermissions: AppPermission[];

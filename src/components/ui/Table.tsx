@@ -19,6 +19,9 @@ interface TableProps<T> {
   onRowClick?: (item: T) => void;
   loading?: boolean;
   emptyMessage?: string;
+  sortKey?: string | null;
+  sortDir?: "asc" | "desc";
+  onSort?: (key: string) => void;
 }
 
 export function Table<T>({
@@ -28,21 +31,34 @@ export function Table<T>({
   onRowClick,
   loading,
   emptyMessage = "Tidak ada data",
+  sortKey: externalSortKey,
+  sortDir: externalSortDir,
+  onSort,
 }: TableProps<T>) {
-  const [sortKey, setSortKey] = useState<string | null>(null);
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [internalSortKey, setInternalSortKey] = useState<string | null>(null);
+  const [internalSortDir, setInternalSortDir] = useState<"asc" | "desc">("asc");
+
+  const sortKey = externalSortKey !== undefined ? externalSortKey : internalSortKey;
+  const sortDir = externalSortDir !== undefined ? externalSortDir : internalSortDir;
 
   const handleSort = (key: string) => {
-    if (sortKey === key) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    if (onSort) {
+      onSort(key);
     } else {
-      setSortKey(key);
-      setSortDir("asc");
+      if (internalSortKey === key) {
+        setInternalSortDir((d) => (d === "asc" ? "desc" : "asc"));
+      } else {
+        setInternalSortKey(key);
+        setInternalSortDir("asc");
+      }
     }
   };
 
   const sortedData = [...data].sort((a, b) => {
     if (!sortKey) return 0;
+    // If we are using controlled sorting, assume the parent has already sorted the data
+    if (onSort) return 0;
+    
     const aVal = (a as Record<string, string | number>)[sortKey];
     const bVal = (b as Record<string, string | number>)[sortKey];
     if (aVal < bVal) return sortDir === "asc" ? -1 : 1;

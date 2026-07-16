@@ -51,6 +51,10 @@ export async function PUT(
       afterState: { status },
     });
 
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/");
+    revalidatePath("/dashboard/apps");
+
     return apiResponse({ ok: true });
   } catch (err) {
     console.error("[APP STATUS] PUT error:", err);

@@ -33,6 +33,10 @@ export async function POST(request: NextRequest) {
       afterState: { status },
     });
 
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/");
+    revalidatePath("/dashboard/apps");
+
     return apiResponse({ ok: true, message: `Semua aplikasi berhasil diubah ke mode ${status}` });
   } catch (error) {
     console.error("Bulk Status Error:", error);

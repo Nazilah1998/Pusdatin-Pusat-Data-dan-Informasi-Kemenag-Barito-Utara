@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentSessionContext } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { r2Client } from "@/lib/r2";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,15 +25,20 @@ export async function POST(request: NextRequest) {
     const extension = file.name.split(".").pop();
     const filename = `app-logo-${uniqueSuffix}.${extension}`;
 
-    // Ensure uploads directory exists
-    const uploadsDir = join(process.cwd(), "public", "uploads", "apps");
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
+    const bucketName = process.env.R2_BUCKET_PUSDATIN || "data-pusdatin";
+    const objectKey = `apps/${filename}`;
 
-    const filePath = join(uploadsDir, filename);
-    await writeFile(filePath, buffer);
+    // Upload to Cloudflare R2
+    await r2Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: objectKey,
+        Body: buffer,
+        ContentType: file.type,
+      })
+    );
 
+    // Return the relative URL so it goes through our proxy route
     const fileUrl = `/uploads/apps/${filename}`;
 
     return NextResponse.json({ url: fileUrl, message: "File uploaded successfully" });

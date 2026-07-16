@@ -12,7 +12,7 @@ import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from "@/hooks/u
 import { useApps } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
 import type { User } from "@/types";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function UsersPage() {
   const router = useRouter();
@@ -33,11 +33,57 @@ export default function UsersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const filtered = users?.filter(
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  let filtered = users?.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase()),
   );
+
+  if (filtered && sortKey) {
+    filtered = [...filtered].sort((a, b) => {
+      let aVal: string = "";
+      let bVal: string = "";
+
+      if (sortKey === "name") {
+        aVal = a.name;
+        bVal = b.name;
+      } else if (sortKey === "nip") {
+        aVal = a.nip || (a.email.includes("@") ? a.email.split("@")[0] : "");
+        bVal = b.nip || (b.email.includes("@") ? b.email.split("@")[0] : "");
+      } else if (sortKey === "jabatan") {
+        aVal = a.jabatan || "";
+        bVal = b.jabatan || "";
+      } else if (sortKey === "unitKerja") {
+        aVal = a.unitKerja || "";
+        bVal = b.unitKerja || "";
+      } else if (sortKey === "noHp") {
+        aVal = a.noHp || "";
+        bVal = b.noHp || "";
+      } else if (sortKey === "role") {
+        aVal = a.role;
+        bVal = b.role;
+      } else {
+        aVal = String((a as any)[sortKey] || "");
+        bVal = String((b as any)[sortKey] || "");
+      }
+
+      if (aVal < bVal) return sortDir === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+
+  const handleSort = (key: string) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
 
   const handleSubmit = async (data: Partial<User>) => {
     try {
@@ -68,8 +114,8 @@ export default function UsersPage() {
     try {
       await deleteUser.mutateAsync(deletingUser.id);
       toast("success", "Pengguna berhasil dihapus");
-    } catch {
-      toast("error", "Gagal menghapus pengguna");
+    } catch (error: any) {
+      toast("error", error.message || "Gagal menghapus pengguna");
     } finally {
       setDeletingUser(null);
     }
@@ -110,7 +156,11 @@ export default function UsersPage() {
             variant={currentPage === i ? "primary" : "outline"}
             size="sm"
             onClick={() => setCurrentPage(i)}
-            className={`w-8 h-8 p-0 flex items-center justify-center ${currentPage === i ? 'bg-emerald-600 text-white hover:bg-emerald-700' : ''}`}
+            className={`w-9 h-9 p-0 flex items-center justify-center transition-all duration-200 rounded-lg ${
+              currentPage === i 
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-500/20 border-emerald-600' 
+                : 'hover:bg-slate-100 hover:text-slate-900 border-slate-200 text-slate-600 dark:hover:bg-slate-800 dark:border-slate-700 dark:text-slate-400'
+            }`}
           >
             {i}
           </Button>
@@ -120,29 +170,31 @@ export default function UsersPage() {
     };
 
     return (
-      <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 px-4 py-3">
-        <div className="text-sm text-slate-500">
-          Menampilkan <span className="font-medium text-slate-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> hingga <span className="font-medium text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, totalItems)}</span> dari <span className="font-medium text-slate-900 dark:text-white">{totalItems}</span> data
+      <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-200 dark:border-slate-800 px-6 py-4 gap-4">
+        <div className="text-sm text-slate-500 dark:text-slate-400">
+          Menampilkan <span className="font-semibold text-slate-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> hingga <span className="font-semibold text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, totalItems)}</span> dari <span className="font-semibold text-slate-900 dark:text-white">{totalItems}</span> data
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-2 h-8"
+            className="w-9 h-9 p-0 rounded-lg border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors"
           >
-            &lt;
+            <ChevronLeft className="w-4 h-4" />
           </Button>
-          {renderPageNumbers()}
+          <div className="flex items-center gap-1">
+            {renderPageNumbers()}
+          </div>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setCurrentPage((p) => p + 1)}
             disabled={currentPage >= totalPages}
-            className="px-2 h-8"
+            className="w-9 h-9 p-0 rounded-lg border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors"
           >
-            &gt;
+            <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
       </div>
@@ -215,6 +267,9 @@ export default function UsersPage() {
                 isPegawai={false}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                sortKey={sortKey}
+                sortDir={sortDir}
+                onSort={handleSort}
               />
               {filtered && renderPagination(filtered.filter((u) => u.role === activeTab).length)}
             </CardBody>
@@ -243,6 +298,9 @@ export default function UsersPage() {
               isPegawai={userType === "internal_pegawai"}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={handleSort}
             />
             {filtered && renderPagination(filtered.length)}
           </CardBody>

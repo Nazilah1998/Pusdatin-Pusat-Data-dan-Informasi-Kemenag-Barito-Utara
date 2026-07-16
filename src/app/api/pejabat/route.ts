@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, tipePejabat, orderIndex } = body;
+    const { id, tipePejabat, orderIndex, unitKerja } = body;
 
     if (!id || !tipePejabat) {
       return apiResponse({ message: "Pegawai ID dan Tipe Pejabat wajib diisi" }, 400);
@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
       .set({
         tipePejabat,
         orderIndex: orderIndex || 0,
+        ...(unitKerja !== undefined ? { unitKerja } : {})
       })
       .where(eq(profilesPegawai.profileId, id))
       .returning();

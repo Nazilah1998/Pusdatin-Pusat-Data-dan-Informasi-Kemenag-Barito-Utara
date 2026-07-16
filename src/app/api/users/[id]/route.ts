@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { apiResponse } from "@/lib/api-helpers";
 import { getCurrentSessionContext } from "@/lib/auth";
 import { db } from "@/lib/drizzle";
-import { users as usersTable, appPermissions, satelliteApps, profilesPegawai } from "@/db/schema";
+import { users as usersTable, appPermissions, satelliteApps, profilesPegawai, profilesPemohon } from "@/db/schema";
 import { recordAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rate-limit";
 import { eq, and, sql } from "drizzle-orm";
@@ -32,11 +32,16 @@ export async function GET(
         nip: profilesPegawai.nip,
         jabatan: profilesPegawai.jabatan,
         unitKerja: profilesPegawai.unitKerja,
+        noHp: profilesPemohon.noHp,
+        alamat: profilesPemohon.alamat,
+        nik: profilesPemohon.nik,
+        pekerjaan: profilesPemohon.pekerjaan,
         createdAt: usersTable.createdAt,
         updatedAt: usersTable.updatedAt,
       })
       .from(usersTable)
       .leftJoin(profilesPegawai, eq(usersTable.id, profilesPegawai.profileId))
+      .leftJoin(profilesPemohon, eq(usersTable.id, profilesPemohon.profileId))
       .where(eq(usersTable.id, id))
       .limit(1);
 
@@ -82,7 +87,7 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, email, password, role, status, userType, nip, jabatan, unitKerja, appPermissions: newPerms } = body;
+    const { name, email, password, role, status, userType, nip, jabatan, unitKerja, noHp, alamat, nik, pekerjaan, appPermissions: newPerms } = body;
 
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
@@ -91,13 +96,20 @@ export async function PUT(
     if (role !== undefined) updateData.role = role;
     if (status !== undefined) updateData.status = status;
     if (userType !== undefined) updateData.userType = userType;
+    if (noHp !== undefined) updateData.phone = noHp;
+    if (alamat !== undefined) updateData.address = alamat;
     updateData.updatedAt = new Date();
 
     const pegawaiData: Record<string, unknown> = {};
     if (nip !== undefined) pegawaiData.nip = nip;
     if (jabatan !== undefined) pegawaiData.jabatan = jabatan;
     if (unitKerja !== undefined) pegawaiData.unitKerja = unitKerja;
-    updateData.updatedAt = new Date();
+
+    const pemohonData: Record<string, unknown> = {};
+    if (noHp !== undefined) pemohonData.noHp = noHp;
+    if (alamat !== undefined) pemohonData.alamat = alamat;
+    if (nik !== undefined) pemohonData.nik = nik;
+    if (pekerjaan !== undefined) pemohonData.pekerjaan = pekerjaan;
 
     const [oldUser] = await db
       .select()
@@ -117,6 +129,19 @@ export async function PUT(
           await db.insert(profilesPegawai).values({
             profileId: id,
             ...pegawaiData
+          });
+        }
+      }
+
+      if (Object.keys(pemohonData).length > 0) {
+        pemohonData.updatedAt = new Date();
+        const [existingPemohon] = await db.select().from(profilesPemohon).where(eq(profilesPemohon.profileId, id)).limit(1);
+        if (existingPemohon) {
+          await db.update(profilesPemohon).set(pemohonData).where(eq(profilesPemohon.profileId, id));
+        } else {
+          await db.insert(profilesPemohon).values({
+            profileId: id,
+            ...pemohonData
           });
         }
       }
@@ -222,6 +247,27 @@ export async function DELETE(
 
     if (user) {
       await db.delete(appPermissions).where(eq(appPermissions.userId, id));
+      // Update foreign keys that don't have cascade delete (activity logs, generated docs)
+      try {
+        await db.execute(sql`
+          UPDATE "kemenag_pusdatin"."ptsp_activity_logs" 
+          SET actor_id = NULL 
+          WHERE actor_id = ${id}
+        `);
+      } catch (e) {
+        console.warn("No ptsp_activity_logs found or error updating:", e);
+      }
+      
+      try {
+        await db.execute(sql`
+          UPDATE "kemenag_ptsp"."ptsp_generated_documents" 
+          SET generated_by = NULL 
+          WHERE generated_by = ${id}
+        `);
+      } catch (e) {
+        console.warn("No ptsp_generated_documents found or error updating:", e);
+      }
+
       await db.delete(usersTable).where(eq(usersTable.id, id));
 
       try {
@@ -260,8 +306,21 @@ export async function DELETE(
     }
 
     return apiResponse({ ok: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error("[USER] DELETE error:", err);
+    
+    // Drizzle wraps Postgres errors, so we check both the outer error and the inner cause.
+    const isForeignKeyError = 
+      err?.code === '23503' || 
+      err?.cause?.code === '23503' || 
+      (err?.message && err.message.includes('foreign key constraint'));
+
+    if (isForeignKeyError) {
+      return apiResponse({ 
+        message: "Gagal menghapus pengguna karena akun ini sudah memiliki riwayat aktivitas/permohonan. Silakan ubah status pengguna menjadi Nonaktif." 
+      }, 400);
+    }
+    
     return apiResponse({ message: "Internal server error" }, 500);
   }
 }

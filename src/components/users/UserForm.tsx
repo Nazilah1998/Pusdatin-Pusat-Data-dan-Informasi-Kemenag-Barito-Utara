@@ -43,6 +43,12 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
   const [nip, setNip] = useState(initialData?.nip || fallbackNip);
   const [jabatan, setJabatan] = useState(initialData?.jabatan || "");
   const [unitKerja, setUnitKerja] = useState(initialData?.unitKerja || "");
+
+  // Masyarakat fields
+  const [nik, setNik] = useState(initialData?.nik || "");
+  const [noHp, setNoHp] = useState(initialData?.noHp || "");
+  const [alamat, setAlamat] = useState(initialData?.alamat || "");
+  const [pekerjaan, setPekerjaan] = useState(initialData?.pekerjaan || "");
   
   const { data: apps } = useApps();
   const [appPermissions, setAppPermissions] = useState<AppPermission[]>(
@@ -100,6 +106,7 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
       userType,
       status,
       ...(userType === "internal_pegawai" ? { nip, jabatan, unitKerja } : {}),
+      ...(userType === "eksternal_masyarakat" ? { nik, noHp, alamat, pekerjaan } : {}),
       appPermissions: userType === "internal_admin" && finalRole !== "super_admin" ? appPermissions.filter((p) => p.role !== "none") : [],
     });
   };
@@ -116,7 +123,7 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
         />
         <Input
           id="email"
-          label="Email"
+          label="Email / Akun"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -169,6 +176,37 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
               label="Unit Kerja"
               value={unitKerja}
               onChange={(e) => setUnitKerja(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
+
+      {userType === "eksternal_masyarakat" && (
+        <div className="grid gap-4 sm:grid-cols-2 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+          <Input
+            id="nik"
+            label="NIK (Nomor Induk Kependudukan)"
+            value={nik}
+            onChange={(e) => setNik(e.target.value)}
+          />
+          <Input
+            id="noHp"
+            label="No. WhatsApp / HP"
+            value={noHp}
+            onChange={(e) => setNoHp(e.target.value)}
+          />
+          <Input
+            id="pekerjaan"
+            label="Pekerjaan"
+            value={pekerjaan}
+            onChange={(e) => setPekerjaan(e.target.value)}
+          />
+          <div className="sm:col-span-2">
+            <Input
+              id="alamat"
+              label="Alamat Lengkap"
+              value={alamat}
+              onChange={(e) => setAlamat(e.target.value)}
             />
           </div>
         </div>

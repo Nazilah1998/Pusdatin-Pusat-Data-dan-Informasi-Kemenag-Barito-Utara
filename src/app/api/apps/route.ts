@@ -64,6 +64,10 @@ export async function POST(req: NextRequest) {
       availableFeatures: [],
     }).returning();
 
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/");
+    revalidatePath("/dashboard/apps");
+
     return apiResponse(newApp[0], 201);
   } catch (err) {
     console.error("[APPS] POST error:", err);

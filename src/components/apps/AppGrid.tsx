@@ -218,8 +218,8 @@ export function AppGrid({
                       className={cn(
                         "absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-md shadow-sm transition-all duration-300 ease-out", 
                         app.status === 'online' 
-                          ? "left-1 bg-white dark:bg-slate-700" 
-                          : "left-[calc(50%+2px)] bg-white dark:bg-slate-700"
+                          ? "left-1 bg-emerald-500 dark:bg-emerald-600 shadow-emerald-500/20" 
+                          : "left-[calc(50%+2px)] bg-red-500 dark:bg-red-600 shadow-red-500/20"
                       )} 
                     />
                     <button 
@@ -231,10 +231,10 @@ export function AppGrid({
                       }}
                       className={cn(
                         "relative z-10 flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[11px] uppercase tracking-wider font-bold transition-colors rounded-md", 
-                        app.status === 'online' ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                        app.status === 'online' ? "text-white" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
                       )}
                     >
-                      <div className={cn("h-1.5 w-1.5 rounded-full", app.status === 'online' ? "bg-emerald-500 animate-pulse" : "bg-transparent")} />
+                      <div className={cn("h-1.5 w-1.5 rounded-full", app.status === 'online' ? "bg-white animate-pulse" : "bg-transparent")} />
                       Online
                     </button>
                     <button 
@@ -246,10 +246,10 @@ export function AppGrid({
                       }}
                       className={cn(
                         "relative z-10 flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[11px] uppercase tracking-wider font-bold transition-colors rounded-md", 
-                        app.status === 'maintenance' ? "text-amber-600 dark:text-amber-400" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                        app.status !== 'online' ? "text-white" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
                       )}
                     >
-                      <div className={cn("h-1.5 w-1.5 rounded-full", app.status === 'maintenance' ? "bg-amber-500" : "bg-transparent")} />
+                      <div className={cn("h-1.5 w-1.5 rounded-full", app.status !== 'online' ? "bg-white" : "bg-transparent")} />
                       Maintenance
                     </button>
                   </div>

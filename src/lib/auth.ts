@@ -48,6 +48,10 @@ export async function getCurrentSessionContext(serverUser?: User | null): Promis
         .where(eq(usersTable.email, user.email ?? ""))
         .limit(1);
       
+      if (p?.status === "inactive") {
+        return { user: null, isAuthenticated: false, isAdmin: false };
+      }
+
       profile = p;
       role = profile?.role || "viewer";
 

@@ -11,9 +11,12 @@ interface UserTableProps {
   onEdit?: (user: User) => void;
   onDelete?: (user: User) => void;
   isPegawai?: boolean;
+  sortKey?: string | null;
+  sortDir?: "asc" | "desc";
+  onSort?: (key: string) => void;
 }
 
-export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTableProps) {
+export function UserTable({ data, loading, onEdit, onDelete, isPegawai, sortKey, sortDir, onSort }: UserTableProps) {
   const columns = [
         {
           key: "name",
@@ -33,6 +36,16 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
                 <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
               </div>
             </div>
+          ),
+        },
+        {
+          key: "status",
+          header: "Status",
+          sortable: true,
+          render: (user: User) => (
+            <Badge variant={user.status === "active" ? "success" : "danger"}>
+              {user.status === "active" ? "Aktif" : "Nonaktif"}
+            </Badge>
           ),
         },
         {
@@ -217,6 +230,9 @@ export function UserTable({ data, loading, onEdit, onDelete, isPegawai }: UserTa
       keyExtractor={(u) => u.id}
       loading={loading}
       emptyMessage="Belum ada pengguna"
+      sortKey={sortKey}
+      sortDir={sortDir}
+      onSort={onSort}
     />
   );
 }

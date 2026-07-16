@@ -22,6 +22,21 @@ interface Pejabat {
   orderIndex: number;
 }
 
+const UNIT_KERJA_OPTIONS = [
+  "Sub Bagian Tata Usaha",
+  "Seksi Pendidikan Madrasah",
+  "Seksi Pendidikan Agama Islam",
+  "Seksi Pendidikan Diniyah & Pondok Pesantren",
+  "Seksi Bimbingan Masyarakat Islam",
+  "Penyelenggara Zakat dan Wakaf",
+  "Penyelenggara Hindu",
+  "KUA Kecamatan Teweh Tengah",
+  "KUA Kecamatan Lahei",
+  "KUA Kecamatan Gunung Purei",
+  "KUA Kecamatan Montallat",
+  "KUA Kecamatan Gunung Timang",
+];
+
 export default function PejabatPage() {
   const [data, setData] = useState<Pejabat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +49,7 @@ export default function PejabatPage() {
   const [orderIndex, setOrderIndex] = useState(0);
   const [selectedPegawaiId, setSelectedPegawaiId] = useState("");
   const [nipInput, setNipInput] = useState("");
+  const [unitKerja, setUnitKerja] = useState("");
   
   const { data: pegawaiList } = useUsers({ userType: "internal_pegawai" });
 
@@ -64,12 +80,14 @@ export default function PejabatPage() {
       setSelectedPegawaiId(pejabat.id);
       setTipePejabat(pejabat.tipePejabat);
       setOrderIndex(pejabat.orderIndex);
+      setUnitKerja(pejabat.unitKerja || "");
     } else {
       setEditingId(null);
       setSelectedPegawaiId("");
       setNipInput("");
       setTipePejabat("Atasan Langsung");
       setOrderIndex(0);
+      setUnitKerja("");
     }
     setShowForm(true);
   };
@@ -77,7 +95,12 @@ export default function PejabatPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const payload = { id: selectedPegawaiId, tipePejabat, orderIndex };
+      const payload = { 
+        id: selectedPegawaiId, 
+        tipePejabat, 
+        orderIndex,
+        unitKerja: tipePejabat === "Atasan Langsung" ? unitKerja : null
+      };
       const url = editingId ? `/api/pejabat/${editingId}` : "/api/pejabat";
       const method = editingId ? "PUT" : "POST";
 
@@ -276,6 +299,20 @@ export default function PejabatPage() {
                 {data.find(d => d.id === editingId)?.nama}
               </div>
             </div>
+          )}
+          
+          {tipePejabat === "Atasan Langsung" && (
+            <Select
+              id="unitKerja"
+              label="Unit Kerja (Atasan Langsung)"
+              value={unitKerja}
+              onChange={(e) => setUnitKerja(e.target.value)}
+              options={[
+                { value: "", label: "Pilih Unit Kerja" },
+                ...UNIT_KERJA_OPTIONS.map(u => ({ value: u, label: u }))
+              ]}
+              required
+            />
           )}
           <Input
             id="orderIndex"

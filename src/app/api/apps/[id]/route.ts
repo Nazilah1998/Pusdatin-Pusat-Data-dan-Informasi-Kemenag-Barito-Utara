@@ -41,6 +41,10 @@ export async function PATCH(
       .set(updates)
       .where(eq(satelliteApps.id, id));
 
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/");
+    revalidatePath("/dashboard/apps");
+
     return apiResponse({ message: "App updated successfully" });
   } catch (err) {
     console.error("[APPS] PATCH error:", err);

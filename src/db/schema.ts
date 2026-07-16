@@ -14,6 +14,18 @@ import {
 export const pusdatin = pgSchema("kemenag_pusdatin");
 export const ptsp = pgSchema("kemenag_ptsp");
 
+export const ptspServices = ptsp.table("ptsp_services", {
+  id: integer("id").primaryKey(),
+  category: text("category").notNull().default("public"),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+export const ptspServiceItems = ptsp.table("ptsp_service_items", {
+  id: integer("id").primaryKey(),
+  serviceId: integer("service_id").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
 export const profiles = pusdatin.table("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),

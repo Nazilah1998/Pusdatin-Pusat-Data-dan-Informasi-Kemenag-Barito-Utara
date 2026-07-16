@@ -22,6 +22,7 @@ export async function PUT(
     const updateData: Record<string, unknown> = {};
     if (tipePejabat !== undefined) updateData.tipePejabat = tipePejabat;
     if (orderIndex !== undefined) updateData.orderIndex = orderIndex;
+    if (unitKerja !== undefined) updateData.unitKerja = unitKerja;
     updateData.updatedAt = new Date();
 
     const [updated] = await db
