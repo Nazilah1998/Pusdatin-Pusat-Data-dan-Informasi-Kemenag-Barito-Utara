@@ -12,7 +12,8 @@ import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from "@/hooks/u
 import { useApps } from "@/hooks/use-apps";
 import { toast } from "@/components/ui/Toast";
 import type { User } from "@/types";
-import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { exportToCsv } from "@/lib/utils";
 
 export default function UsersPage() {
   const router = useRouter();
@@ -119,6 +120,30 @@ export default function UsersPage() {
     } finally {
       setDeletingUser(null);
     }
+  };
+
+  const handleExportCsv = () => {
+    if (!filtered) return;
+    
+    // According to request: Nama Pengguna, NIP, Gol/Ruang, Jabatan, unit kerja dan No HP
+    const headers = ["Nama Pengguna", "NIP", "Gol/Ruang", "Jabatan", "Unit Kerja", "No HP", "Role"];
+    
+    let usersToExport = filtered;
+    if (userType === "internal_admin") {
+      usersToExport = filtered.filter((u) => u.role === activeTab);
+    }
+
+    const rows = usersToExport.map((u) => [
+      u.name || "-",
+      u.nip || "-",
+      u.pangkatGolongan || "-",
+      u.jabatan || "-",
+      u.unitKerja || "-",
+      u.noHp || "-",
+      u.role || "-",
+    ]);
+
+    exportToCsv(`data_pengguna_${userType}.csv`, [headers, ...rows]);
   };
 
     const currentApp = apps?.find((a) => a.id === appId);
@@ -248,14 +273,20 @@ export default function UsersPage() {
               ))}
             </div>
 
-            <div className="relative w-full sm:max-w-xs">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                placeholder="Cari pengguna..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
-              />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  placeholder="Cari pengguna..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
+                />
+              </div>
+              <Button onClick={handleExportCsv} variant="primary" className="h-10 whitespace-nowrap bg-emerald-600 hover:bg-emerald-700">
+                <Download className="w-4 h-4 mr-2" />
+                Cetak CSV
+              </Button>
             </div>
           </div>
 
@@ -278,17 +309,23 @@ export default function UsersPage() {
       ) : (
         <Card>
           <CardHeader>
-            <div className="relative w-full max-w-xs">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                placeholder="Cari pengguna..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setCurrentPage(1); // Reset page on search
-                }}
-                className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
-              />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  placeholder="Cari pengguna..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1); // Reset page on search
+                  }}
+                  className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:border-emerald-500 dark:focus-visible:border-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20"
+                />
+              </div>
+              <Button onClick={handleExportCsv} variant="primary" className="h-10 whitespace-nowrap bg-emerald-600 hover:bg-emerald-700">
+                <Download className="w-4 h-4 mr-2" />
+                Cetak CSV
+              </Button>
             </div>
           </CardHeader>
           <CardBody className="p-0">

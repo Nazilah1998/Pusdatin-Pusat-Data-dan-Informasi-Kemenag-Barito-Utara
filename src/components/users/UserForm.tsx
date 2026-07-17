@@ -20,6 +20,32 @@ const userTypeOptions = [
   { value: "eksternal_masyarakat", label: "Masyarakat Umum" },
 ];
 
+const UNIT_KERJA_OPTIONS = [
+  "Kantor Kementerian Agama",
+  "Sub Bagian Tata Usaha",
+  "Seksi Bimbingan Masyarakat Islam",
+  "Seksi Pendidikan Agama Islam",
+  "Seksi Pendidikan Madrasah",
+  "Seksi Pendidikan Diniyah & Pondok Pesantren",
+  "Penyelenggara Zakat dan Wakaf",
+  "Penyelenggara Hindu",
+  "KUA Kecamatan Teweh Tengah",
+  "KUA Kecamatan Teweh Timur",
+  "KUA Kecamatan Gunung Timang",
+  "KUA Kecamatan Lahei",
+  "KUA Kecamatan Montallat",
+  "MAN Barito Utara",
+  "MTsN Barito Utara",
+  "MIN 1 Barito Utara",
+  "MIN 2 Barito Utara",
+  "MI Swasta",
+  "MTs Swasta",
+  "RA/BA",
+  "SD Negeri",
+  "SLTP Negeri",
+  "SLTA/SMK Negeri",
+];
+
 
 
 interface UserFormProps {
@@ -43,6 +69,12 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
   const [nip, setNip] = useState(initialData?.nip || fallbackNip);
   const [jabatan, setJabatan] = useState(initialData?.jabatan || "");
   const [unitKerja, setUnitKerja] = useState(initialData?.unitKerja || "");
+  const [unitKerjaCustom, setUnitKerjaCustom] = useState(
+    initialData?.unitKerja && !UNIT_KERJA_OPTIONS.includes(initialData.unitKerja)
+      ? initialData.unitKerja
+      : ""
+  );
+  const isCustomUnitKerja = unitKerja === "__lainnya__";
 
   // Masyarakat fields
   const [nik, setNik] = useState(initialData?.nik || "");
@@ -105,7 +137,7 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
       role: finalRole,
       userType,
       status,
-      ...(userType === "internal_pegawai" ? { nip, jabatan, unitKerja } : {}),
+      ...(userType === "internal_pegawai" ? { nip, jabatan, unitKerja: isCustomUnitKerja ? unitKerjaCustom : unitKerja } : {}),
       ...(userType === "eksternal_masyarakat" ? { nik, noHp, alamat, pekerjaan } : {}),
       appPermissions: userType === "internal_admin" && finalRole !== "super_admin" ? appPermissions.filter((p) => p.role !== "none") : [],
     });
@@ -171,12 +203,40 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
             onChange={(e) => setJabatan(e.target.value)}
           />
           <div className="sm:col-span-2">
-            <Input
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+              Unit Kerja
+            </label>
+            <select
               id="unitKerja"
-              label="Unit Kerja"
-              value={unitKerja}
-              onChange={(e) => setUnitKerja(e.target.value)}
-            />
+              value={isCustomUnitKerja ? "__lainnya__" : (UNIT_KERJA_OPTIONS.includes(unitKerja) ? unitKerja : (unitKerja ? "__lainnya__" : ""))}
+              onChange={(e) => {
+                if (e.target.value === "__lainnya__") {
+                  setUnitKerja("__lainnya__");
+                } else {
+                  setUnitKerja(e.target.value);
+                  setUnitKerjaCustom("");
+                }
+              }}
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            >
+              <option value="">-- Pilih Unit Kerja --</option>
+              {UNIT_KERJA_OPTIONS.map((uk) => (
+                <option key={uk} value={uk}>{uk}</option>
+              ))}
+              <option value="__lainnya__">Lainnya (ketik manual)...</option>
+            </select>
+            {isCustomUnitKerja && (
+              <input
+                type="text"
+                placeholder="Ketik unit kerja secara manual..."
+                value={unitKerjaCustom}
+                onChange={(e) => {
+                  setUnitKerjaCustom(e.target.value);
+                  setUnitKerja("__lainnya__");
+                }}
+                className="mt-2 w-full rounded-lg border border-emerald-300 dark:border-emerald-700 bg-white dark:bg-slate-950 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              />
+            )}
           </div>
         </div>
       )}
@@ -184,22 +244,10 @@ export function UserForm({ initialData, defaultUserType, onSubmit, onCancel, loa
       {userType === "eksternal_masyarakat" && (
         <div className="grid gap-4 sm:grid-cols-2 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
           <Input
-            id="nik"
-            label="NIK (Nomor Induk Kependudukan)"
-            value={nik}
-            onChange={(e) => setNik(e.target.value)}
-          />
-          <Input
             id="noHp"
             label="No. WhatsApp / HP"
             value={noHp}
             onChange={(e) => setNoHp(e.target.value)}
-          />
-          <Input
-            id="pekerjaan"
-            label="Pekerjaan"
-            value={pekerjaan}
-            onChange={(e) => setPekerjaan(e.target.value)}
           />
           <div className="sm:col-span-2">
             <Input

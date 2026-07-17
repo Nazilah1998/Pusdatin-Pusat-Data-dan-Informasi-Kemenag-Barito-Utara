@@ -8,6 +8,7 @@ export interface User {
   avatar?: string;
   nip?: string;
   jabatan?: string;
+  pangkatGolongan?: string | null;
   unitKerja?: string;
   noHp?: string | null;
   alamat?: string | null;

@@ -38,3 +38,27 @@ export function statusColor(status: string) {
     default: return "text-slate-600 bg-slate-50";
   }
 }
+
+export function exportToCsv(filename: string, rows: any[][]) {
+  const csvContent = rows
+    .map((row) =>
+      row
+        .map((val) => {
+          if (val === null || val === undefined) return '""';
+          const str = String(val).replace(/"/g, '""');
+          return `"${str}"`;
+        })
+        .join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}

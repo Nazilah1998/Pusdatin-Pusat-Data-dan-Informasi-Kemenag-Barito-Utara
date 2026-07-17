@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
         avatar: usersTable.avatar,
         nip: profilesPegawai.nip,
         jabatan: profilesPegawai.jabatan,
+        pangkatGolongan: profilesPegawai.pangkatGolongan,
         unitKerja: profilesPegawai.unitKerja,
         noHp: sql<string>`COALESCE(${profilesPemohon.noHp}, ${usersTable.phone})`,
         alamat: sql<string>`COALESCE(${profilesPemohon.alamat}, ${usersTable.address})`,
