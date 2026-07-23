@@ -44,9 +44,9 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col items-center text-center px-12 animate-fade-in-up">
           <div className="rounded-full bg-white/10 p-6 backdrop-blur-md border border-white/20 mb-8 shadow-2xl">
             <img
-              src="/branding/kemenag.svg"
-              alt="Kemenag"
-              className="h-24 w-24 drop-shadow-lg"
+              src="/branding/pusdatin.png"
+              alt="PUSDATIN"
+              className="h-24 w-auto drop-shadow-lg object-contain"
             />
           </div>
           <h1 className="text-4xl font-bold text-white mb-4 tracking-tight drop-shadow-sm">
@@ -75,16 +75,16 @@ export default function LoginPage() {
           <div className="mb-10 lg:hidden text-center flex flex-col items-center">
             <div className="rounded-full bg-emerald-50 dark:bg-emerald-900/30 p-4 mb-4">
               <img
-                src="/branding/kemenag.svg"
-                alt="Kemenag"
-                className="h-16 w-16"
+                src="/branding/pusdatin.png"
+                alt="PUSDATIN"
+                className="h-16 w-auto object-contain"
               />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Pusdatin Kemenag
             </h1>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-[250px] mx-auto">
-              Portal Pusat Data dan Informasi Kemenag Barito Utara
+              Portal Pusat Data dan Teknologi Informasi Kemenag Barito Utara
             </p>
           </div>
 

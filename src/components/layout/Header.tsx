@@ -45,9 +45,9 @@ export function Header() {
               <button className="flex items-center gap-3 rounded-lg p-1.5 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 text-left">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
                   <img
-                    src="/branding/kemenag.svg"
-                    alt="Kemenag"
-                    className="h-5 w-5 object-contain"
+                    src="/branding/pusdatin.png"
+                    alt="PUSDATIN"
+                    className="h-5 w-auto object-contain"
                   />
                 </div>
                 <div className="hidden sm:block">

@@ -46,9 +46,9 @@ export function Sidebar({ onClose, onLogout }: SidebarProps) {
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-5">
         <Link href="/dashboard/apps" className="flex items-center gap-3">
           <img
-            src="/branding/kemenag.svg"
-            alt="Kemenag"
-            className="h-10 w-10"
+            src="/branding/pusdatin.png"
+            alt="PUSDATIN"
+            className="h-9 w-auto object-contain"
           />
           <div>
             <p className="text-sm font-bold text-slate-900 dark:text-white">PUSDATIN</p>
