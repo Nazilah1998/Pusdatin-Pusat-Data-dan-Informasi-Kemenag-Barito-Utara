@@ -17,15 +17,19 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pusdatin.kemenag-baritoutara.com";
+const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://pusdatin.kemenag-baritoutara.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "PUSDATIN - Pusat Data dan Teknologi Informasi Kemenag Kabupaten Barito Utara",
+    default:
+      "PUSDATIN - Pusat Data dan Teknologi Informasi Kemenag Kabupaten Barito Utara",
     template: "%s | PUSDATIN Kemenag Barito Utara",
   },
-  description: "Portal Pusat Data dan Teknologi Informasi — manajemen data master terpadu, layanan publik digital, dan sistem autentikasi Single Sign-On (SSO) Kementerian Agama Kabupaten Barito Utara.",
+  description:
+    "Portal Pusat Data dan Teknologi Informasi — manajemen data master terpadu, layanan publik digital, dan sistem autentikasi Single Sign-On (SSO) Kementerian Agama Kabupaten Barito Utara.",
   keywords: [
     "PUSDATIN",
     "Kemenag Barito Utara",
@@ -35,7 +39,7 @@ export const metadata: Metadata = {
     "SSO Kemenag Barito Utara",
     "Layanan Digital Kemenag",
     "PTSP Kemenag Barito Utara",
-    "Data Keagamaan Barito Utara"
+    "Data Keagamaan Barito Utara",
   ],
   authors: [{ name: "PUSDATIN Kemenag Barito Utara" }],
   creator: "PUSDATIN Kemenag Barito Utara",
@@ -53,8 +57,10 @@ export const metadata: Metadata = {
     locale: "id_ID",
     url: baseUrl,
     siteName: "PUSDATIN Kemenag Barito Utara",
-    title: "PUSDATIN - Pusat Data dan Teknologi Informasi Kemenag Kabupaten Barito Utara",
-    description: "Portal resmi pengelolaan data master dan ekosistem aplikasi terpadu Kementerian Agama Kabupaten Barito Utara.",
+    title:
+      "PUSDATIN - Pusat Data dan Teknologi Informasi Kemenag Kabupaten Barito Utara",
+    description:
+      "Portal resmi pengelolaan data master dan ekosistem aplikasi terpadu Kementerian Agama Kabupaten Barito Utara.",
     images: [
       {
         url: "/branding/kemenag.svg",
@@ -67,7 +73,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PUSDATIN - Pusat Data dan Teknologi Informasi Kemenag Barito Utara",
-    description: "Portal resmi pengelolaan data master dan ekosistem aplikasi terpadu Kementerian Agama Kabupaten Barito Utara.",
+    description:
+      "Portal resmi pengelolaan data master dan ekosistem aplikasi terpadu Kementerian Agama Kabupaten Barito Utara.",
     images: ["/branding/kemenag.svg"],
   },
   robots: {
@@ -92,7 +99,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="id" className={jakarta.variable} suppressHydrationWarning>
       <body className={`${jakarta.className} font-sans antialiased`}>
